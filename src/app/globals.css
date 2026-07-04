@@ -32,24 +32,25 @@
 
 :root {
   --radius: 0.75rem;
-  --background: #FAFAFA;
-  --foreground: #262626;
+  /* Spiffy Brand — Royal Navratri Boutique Palette */
+  --background: #FDF6EC;
+  --foreground: #2C1810;
   --card: #FFFFFF;
-  --card-foreground: #262626;
+  --card-foreground: #2C1810;
   --popover: #FFFFFF;
-  --popover-foreground: #262626;
-  --primary: #0095F6;
+  --popover-foreground: #2C1810;
+  --primary: #8B2252;
   --primary-foreground: #FFFFFF;
-  --secondary: #ED4956;
-  --secondary-foreground: #FFFFFF;
-  --muted: #EFEFEF;
-  --muted-foreground: #8E8E8E;
-  --accent: #C13584;
+  --secondary: #C8A951;
+  --secondary-foreground: #2C1810;
+  --muted: #F5EBDB;
+  --muted-foreground: #7A5C4E;
+  --accent: #E8752A;
   --accent-foreground: #FFFFFF;
-  --destructive: #ED4956;
-  --border: #DBDBDB;
-  --input: #DBDBDB;
-  --ring: #0095F6;
+  --destructive: #DC3545;
+  --border: #EDE3D6;
+  --input: #EDE3D6;
+  --ring: #8B2252;
 }
 
 @layer base {
@@ -74,20 +75,31 @@
   .font-sans-body {
     font-family: var(--font-poppins), -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   }
-  .text-gradient-ig {
-    background: linear-gradient(45deg, #F58529 0%, #DD2A7B 50%, #8134AF 100%);
+  /* Spiffy brand gradient — magenta to gold to saffron */
+  .text-gradient-spiffy {
+    background: linear-gradient(135deg, #8B2252 0%, #C8A951 50%, #E8752A 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+  /* Gold shimmer for headings */
   .text-gradient-gold {
-    background: linear-gradient(135deg, #B8860B 0%, #D4A017 50%, #E8C240 100%);
+    background: linear-gradient(135deg, #B8860B 0%, #D4A843 40%, #E8C860 60%, #C8A951 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-  .bg-ig-gradient {
-    background: linear-gradient(45deg, #F58529, #DD2A7B, #8134AF);
+  /* Navratri festive gradient */
+  .bg-spiffy-gradient {
+    background: linear-gradient(135deg, #8B2252, #C8A951);
+  }
+  /* Warm hero gradient overlay */
+  .bg-spiffy-hero {
+    background: linear-gradient(180deg, #8B2252 0%, #6B1840 40%, #3D0F25 100%);
+  }
+  /* Saffron to magenta accent bar */
+  .bg-spiffy-accent {
+    background: linear-gradient(90deg, #E8752A, #C8A951, #8B2252);
   }
   .no-scrollbar::-webkit-scrollbar {
     display: none;
@@ -101,11 +113,11 @@
 /* Masonry layout */
 .masonry-grid {
   column-count: 2;
-  column-gap: 8px;
+  column-gap: 10px;
 }
 .masonry-grid > * {
   break-inside: avoid;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 /* Reel snap */
@@ -119,5 +131,31 @@
 
 /* Bottom nav safe area */
 .pb-safe {
-  padding-bottom: max(70px, env(safe-area-inset-bottom, 70px));
+  padding-bottom: max(76px, env(safe-area-inset-bottom, 76px));
+}
+
+/* Custom shimmer for brand loading feel */
+@keyframes shimmer-gold {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.shimmer-gold {
+  background: linear-gradient(90deg, #C8A951 25%, #E8D88A 50%, #C8A951 75%);
+  background-size: 200% 100%;
+  animation: shimmer-gold 3s ease-in-out infinite;
+}
+
+/* Floating sparkle animation */
+@keyframes sparkle {
+  0%, 100% { opacity: 0.4; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Gentle pulse for CTA buttons */
+@keyframes gentle-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(139, 34, 82, 0.3); }
+  50% { box-shadow: 0 0 0 8px rgba(139, 34, 82, 0); }
+}
+.pulse-spiffy {
+  animation: gentle-pulse 2.5s ease-in-out infinite;
 }

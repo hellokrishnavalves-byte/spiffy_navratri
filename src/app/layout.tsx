@@ -40,7 +40,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#FAFAFA",
+  themeColor: "#FDF6EC",
 };
 
 export default function RootLayout({
@@ -54,8 +54,8 @@ export default function RootLayout({
         className={`${playfair.variable} ${poppins.variable} antialiased`}
         style={{
           fontFamily: "var(--font-poppins), -apple-system, BlinkMacSystemFont, sans-serif",
-          background: "#FAFAFA",
-          color: "#262626",
+          background: "#FDF6EC",
+          color: "#2C1810",
         }}
       >
         {children}

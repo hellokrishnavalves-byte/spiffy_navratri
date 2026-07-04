@@ -1,0 +1,710 @@
+     1→"use client";
+     2→
+     3→import { useState, useRef } from "react";
+     4→import { motion, AnimatePresence } from "framer-motion";
+     5→import {
+     6→  HomeIcon,
+     7→  Search,
+     8→  Heart,
+     9→  PlusSquare,
+    10→  Film,
+    11→  Instagram,
+    12→  Phone,
+    13→  MessageCircle,
+    14→  X,
+    15→  Send,
+    16→  ChevronLeft,
+    17→  ChevronRight,
+    18→  MapPin,
+    19→  Truck,
+    20→  Globe,
+    21→  Star,
+    22→  Gem,
+    23→  Sparkles,
+    24→  Flame,
+    25→  Scissors,
+    26→  Palette,
+    27→  Ruler,
+    28→  Bookmark,
+    29→  Share2,
+    30→  Grid3X3,
+    31→} from "lucide-react";
+    32→
+    33→const PHONE = "918160159403";
+    34→const WA_BASE = `https://wa.me/${PHONE}`;
+    35→const IG_URL = "https://www.instagram.com/spiffy_clothing_and_jewellery";
+    36→
+    37→/* ─── PINTEREST-STYLE MASONRY DATA ─── */
+    38→const PINS: { src: string; title: string; height: string; likes: number }[] = [
+    39→  { src: "https://sfile.chatglm.cn/images-ppt/c124a55fa892.jpg", title: "Ornate Heritage Lehenga", height: "h-72", likes: 342 },
+    40→  { src: "https://sfile.chatglm.cn/images-ppt/9884bd5243b9.png", title: "Tiered Mirror Work", height: "h-56", likes: 218 },
+    41→  { src: "https://sfile.chatglm.cn/images-ppt/60a5ce0fae2e.jpg", title: "Royal Bandhani Set", height: "h-64", likes: 456 },
+    42→  { src: "https://sfile.chatglm.cn/images-ppt/4e216ba5524c.png", title: "Colorful Traditional", height: "h-80", likes: 189 },
+    43→  { src: "https://sfile.chatglm.cn/images-ppt/a4176f3608e7.jpeg", title: "Embroidered Elegance", height: "h-56", likes: 521 },
+    44→  { src: "https://sfile.chatglm.cn/images-ppt/340c03ecfbd5.jpg", title: "Yellow Festive Look", height: "h-72", likes: 307 },
+    45→  { src: "https://sfile.chatglm.cn/images-ppt/ebf7a28f119c.jpg", title: "Rich Silk Chaniya", height: "h-64", likes: 274 },
+    46→  { src: "https://sfile.chatglm.cn/images-ppt/ad05fdfa4191.jpg", title: "Teal Embroidered", height: "h-56", likes: 395 },
+    47→  { src: "https://sfile.chatglm.cn/images-ppt/027c185047a3.jpg", title: "Festive Grandeur", height: "h-80", likes: 612 },
+    48→  { src: "https://sfile.chatglm.cn/images-ppt/cb15ba3ae2b8.png", title: "Pink Blue Dupatta", height: "h-56", likes: 168 },
+    49→  { src: "https://sfile.chatglm.cn/images-ppt/5c3721b0e2c5.jpg", title: "Garba Dancer", height: "h-64", likes: 489 },
+    50→  { src: "https://sfile.chatglm.cn/images-ppt/a78be4f5bedb.jpg", title: "Green Red Combo", height: "h-72", likes: 231 },
+    51→  { src: "https://sfile.chatglm.cn/images-ppt/5cf850d3dd40.jpg", title: "Ornate Room Pose", height: "h-56", likes: 347 },
+    52→  { src: "https://sfile.chatglm.cn/images-ppt/8cb73d7a1f7b.jpg", title: "Kundan Royal Set", height: "h-64", likes: 413 },
+    53→  { src: "https://sfile.chatglm.cn/images-ppt/e524710e5df1.jpeg", title: "Pearl Choker Set", height: "h-56", likes: 285 },
+    54→  { src: "https://sfile.chatglm.cn/images-ppt/85bf6c9f384b.jpg", title: "Gemstone Jhumkas", height: "h-72", likes: 198 },
+    55→  { src: "https://sfile.chatglm.cn/images-ppt/16d7581478f1.jpg", title: "Turquoise Necklace", height: "h-56", likes: 367 },
+    56→  { src: "https://sfile.chatglm.cn/images-ppt/e8f41674c678.jpg", title: "Temple Gold Set", height: "h-64", likes: 534 },
+    57→];
+    58→
+    59→/* ─── REELS DATA ─── */
+    60→const REELS: { src: string; title: string; desc: string }[] = [
+    61→  {
+    62→    src: "https://sfile.chatglm.cn/images-ppt/efc074bc5101.jpg",
+    63→    title: "Navratri Night Vibes",
+    64→    desc: "Dance the night away in our handcrafted chaniya choli ✨",
+    65→  },
+    66→  {
+    67→    src: "https://sfile.chatglm.cn/images-ppt/b231344d43ec.jpg",
+    68→    title: "Garba Queen Look",
+    69→    desc: "Traditional meets modern — scroll to explore the collection",
+    70→  },
+    71→  {
+    72→    src: "https://sfile.chatglm.cn/images-ppt/83b6435467b3.jpg",
+    73→    title: "Custom Embroidery",
+    74→    desc: "Every piece tells a story. DM us to create yours!",
+    75→  },
+    76→  {
+    77→    src: "https://sfile.chatglm.cn/images-ppt/0bfa986a39f7.webp",
+    78→    title: "Mirror Work Magic",
+    79→    desc: "Abla mirror work that sparkles under the garba lights",
+    80→  },
+    81→];
+    82→
+    83→const NINE_COLORS = [
+    84→  { day: 1, color: "Yellow", hex: "#FFD700", goddess: "Shailputri" },
+    85→  { day: 2, color: "Green", hex: "#228B22", goddess: "Brahmacharini" },
+    86→  { day: 3, color: "Grey", hex: "#A9A9A9", goddess: "Chandraghanta" },
+    87→  { day: 4, color: "Orange", hex: "#FF6B35", goddess: "Kushmanda" },
+    88→  { day: 5, color: "White", hex: "#F0F0F0", goddess: "Skandamata" },
+    89→  { day: 6, color: "Red", hex: "#DC143C", goddess: "Katyayani" },
+    90→  { day: 7, color: "Royal Blue", hex: "#1E3A8A", goddess: "Kaalratri" },
+    91→  { day: 8, color: "Pink", hex: "#FF69B4", goddess: "Mahagauri" },
+    92→  { day: 9, color: "Purple", hex: "#7B2D8E", goddess: "Siddhidatri" },
+    93→];
+    94→
+    95→const TRENDS = [
+    96→  { icon: <Sparkles className="w-4 h-4" />, title: "Bandhani Revival", desc: "Bold tie-dye in new color combos" },
+    97→  { icon: <Scissors className="w-4 h-4" />, title: "Cape Blouses", desc: "One-shoulder & cold-shoulder cuts" },
+    98→  { icon: <Palette className="w-4 h-4" />, title: "Pastel Power", desc: "Soft pastels with mirror work" },
+    99→  { icon: <Gem className="w-4 h-4" />, title: "Kundan Layers", desc: "Layered temple jewellery sets" },
+   100→  { icon: <Ruler className="w-4 h-4" />, title: "Chinon Fabric", desc: "Lightweight with heavy embroidery" },
+   101→  { icon: <Flame className="w-4 h-4" />, title: "Mirror Magic", desc: "Abla & Gotapatti dazzle" },
+   102→];
+   103→
+   104→/* ─── TAB TYPES ─── */
+   105→type Tab = "home" | "search" | "reels" | "orders" | "profile";
+   106→
+   107→/* ═══════════════════════════════════════════════════════════════ */
+   108→/*  IMAGE MODAL                                                  */
+   109→/* ═══════════════════════════════════════════════════════════════ */
+   110→function ImageModal({ src, title, open, onClose }: { src: string; title: string; open: boolean; onClose: () => void }) {
+   111→  return (
+   112→    <AnimatePresence>
+   113→      {open && (
+   114→        <motion.div
+   115→          initial={{ opacity: 0 }}
+   116→          animate={{ opacity: 1 }}
+   117→          exit={{ opacity: 0 }}
+   118→          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
+   119→          onClick={onClose}
+   120→        >
+   121→          <button onClick={onClose} className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/20 flex items-center justify-center z-10" aria-label="Close">
+   122→            <X className="w-5 h-5 text-white" />
+   123→          </button>
+   124→          <motion.div
+   125→            initial={{ scale: 0.85, opacity: 0 }}
+   126→            animate={{ scale: 1, opacity: 1 }}
+   127→            transition={{ type: "spring", damping: 25 }}
+   128→            className="max-w-[92vw] max-h-[85vh] relative"
+   129→            onClick={(e) => e.stopPropagation()}
+   130→          >
+   131→            <img src={src} alt={title} className="max-h-[80vh] w-auto rounded-2xl object-contain" />
+   132→            <p className="text-center mt-3 text-white font-medium text-sm">{title}</p>
+   133→          </motion.div>
+   134→        </motion.div>
+   135→      )}
+   136→    </AnimatePresence>
+   137→  );
+   138→}
+   139→
+   140→/* ═══════════════════════════════════════════════════════════════ */
+   141→/*  TAB: HOME — Instagram-like feed                              */
+   142→/* ═══════════════════════════════════════════════════════════════ */
+   143→function HomeTab() {
+   144→  return (
+   145→    <div className="pb-safe">
+   146→      {/* Stories row */}
+   147→      <div className="bg-white border-b border-[#DBDBDB] px-4 py-3">
+   148→        <div className="flex gap-3 overflow-x-auto no-scrollbar">
+   149→          {[
+   150→            { label: "9 Colors", emoji: "🎨", color: "from-[#F58529] to-[#DD2A7B]" },
+   151→            { label: "Chaniya", emoji: "💃", color: "from-[#DD2A7B] to-[#8134AF]" },
+   152→            { label: "Jewellery", emoji: "💎", color: "from-[#8134AF] to-[#515BD4]" },
+   153→            { label: "Trends", emoji: "🔥", color: "from-[#F58529] to-[#FEDA75]" },
+   154→            { label: "Custom", emoji: "✂️", color: "from-[#0095F6] to-[#00C6FF]" },
+   155→          ].map((s) => (
+   156→            <button key={s.label} className="flex flex-col items-center gap-1 flex-shrink-0">
+   157→              <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${s.color} p-[2px]`}>
+   158→                <div className="w-full h-full rounded-full bg-white p-[2px]">
+   159→                  <div className="w-full h-full rounded-full bg-[#EFEFEF] flex items-center justify-center text-2xl">
+   160→                    {s.emoji}
+   161→                  </div>
+   162→                </div>
+   163→              </div>
+   164→              <span className="text-[10px] text-[#262626] font-medium">{s.label}</span>
+   165→            </button>
+   166→          ))}
+   167→        </div>
+   168→      </div>
+   169→
+   170→      {/* Profile header card */}
+   171→      <div className="bg-white border-b border-[#DBDBDB] p-4">
+   172→        <div className="flex items-center gap-3">
+   173→          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#F58529] to-[#DD2A7B] p-[2px]">
+   174→            <div className="w-full h-full rounded-full bg-white p-[2px]">
+   175→              <div className="w-full h-full rounded-full bg-[#EFEFEF] flex items-center justify-center">
+   176→                <span className="text-lg font-serif-display font-bold text-gradient-ig">S</span>
+   177→              </div>
+   178→            </div>
+   179→          </div>
+   180→          <div className="flex-1 min-w-0">
+   181→            <h2 className="font-semibold text-sm text-[#262626]">spiffy_clothing_and_jewellery</h2>
+   182→            <p className="text-[#8E8E8E] text-xs">Bhoomi Panchal • Designer Wear</p>
+   183→          </div>
+   184→          <a href={`${WA_BASE}?text=Hi%20Spiffy!`} target="_blank" rel="noopener noreferrer"
+   185→            className="px-5 py-1.5 bg-[#0095F6] text-white text-xs font-semibold rounded-lg active:opacity-80 transition-opacity">
+   186→            Order
+   187→          </a>
+   188→        </div>
+   189→        <p className="text-[13px] text-[#262626] mt-3 leading-[1.5]">
+   190→          🦁 Navratri & Festive Collections<br />
+   191→          📍 Exhibitions in Ahmedabad<br />
+   192→          🚚 Worldwide Shipping<br />
+   193→          📧 DM for order<br />
+   194→          👋 Call: +91 81601 59403
+   195→        </p>
+   196→        <div className="flex gap-6 mt-3">
+   197→          <div className="text-center"><p className="font-semibold text-sm text-[#262626]">37</p><p className="text-[10px] text-[#8E8E8E]">posts</p></div>
+   198→          <div className="text-center"><p className="font-semibold text-sm text-[#262626]">7,226</p><p className="text-[10px] text-[#8E8E8E]">followers</p></div>
+   199→          <div className="text-center"><p className="font-semibold text-sm text-[#262626]">1</p><p className="text-[10px] text-[#8E8E8E]">following</p></div>
+   200→        </div>
+   201→      </div>
+   202→
+   203→      {/* 9 Colors row */}
+   204→      <div className="bg-white border-b border-[#DBDBDB] p-4">
+   205→        <p className="text-xs font-semibold text-[#262626] mb-3">🌈 9 Colors of Navratri 2026</p>
+   206→        <div className="flex gap-2 overflow-x-auto no-scrollbar">
+   207→          {NINE_COLORS.map((c) => (
+   208→            <div key={c.day} className="flex-shrink-0 flex flex-col items-center gap-1">
+   209→              <div className="w-10 h-10 rounded-full border border-[#DBDBDB] flex items-center justify-center text-[11px] font-bold text-[#262626]" style={{ backgroundColor: c.hex }}>
+   210→                {c.day}
+   211→              </div>
+   212→              <span className="text-[9px] text-[#8E8E8E] w-12 text-center leading-tight">{c.color}</span>
+   213→            </div>
+   214→          ))}
+   215→        </div>
+   216→      </div>
+   217→
+   218→      {/* Feed post — Hero CTA */}
+   219→      <div className="bg-white border-b border-[#DBDBDB]">
+   220→        <div className="px-4 py-3 flex items-center gap-2">
+   221→          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#F58529] to-[#DD2A7B] p-[1.5px]">
+   222→            <div className="w-full h-full rounded-full bg-white p-[1.5px]">
+   223→              <div className="w-full h-full rounded-full bg-[#EFEFEF] flex items-center justify-center">
+   224→                <span className="text-[10px] font-bold text-gradient-ig">S</span>
+   225→              </div>
+   226→            </div>
+   227→          </div>
+   228→          <span className="text-sm font-semibold text-[#262626]">spiffy_clothing_and_jewellery</span>
+   229→          <span className="text-[10px] text-[#8E8E8E]">• Ahmedabad</span>
+   230→        </div>
+   231→        <div className="relative aspect-square">
+   232→          <img src="https://sfile.chatglm.cn/images-ppt/efc074bc5101.jpg" alt="Navratri celebration" className="w-full h-full object-cover" />
+   233→          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+   234→          <div className="absolute bottom-0 left-0 right-0 p-4">
+   235→            <h3 className="font-serif-display text-2xl font-bold text-white drop-shadow-md">Custom Chaniya Choli</h3>
+   236→            <p className="text-white/90 text-sm mt-1">Any size. Any design. Any color.</p>
+   237→          </div>
+   238→        </div>
+   239→        <div className="px-4 py-3">
+   240→          <div className="flex items-center gap-4 mb-2">
+   241→            <Heart className="w-6 h-6 text-[#262626]" />
+   242→            <MessageCircle className="w-6 h-6 text-[#262626]" />
+   243→            <Share2 className="w-6 h-6 text-[#262626]" />
+   244→            <Bookmark className="w-6 h-6 text-[#262626] ml-auto" />
+   245→          </div>
+   246→          <p className="text-sm text-[#262626]"><span className="font-semibold">7,226 likes</span></p>
+   247→          <p className="text-sm text-[#262626] mt-1">
+   248→            <span className="font-semibold">spiffy_clothing_and_jewellery</span>{" "}
+   249→            Navratri 2026 collection is LIVE! 🎉 DM us or WhatsApp to order your custom chaniya choli & jewellery. Worldwide shipping available!
+   250→          </p>
+   251→        </div>
+   252→      </div>
+   253→
+   254→      {/* Feed post — Trends */}
+   255→      <div className="bg-white border-b border-[#DBDBDB]">
+   256→        <div className="px-4 py-3 flex items-center gap-2">
+   257→          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#F58529] to-[#DD2A7B] p-[1.5px]">
+   258→            <div className="w-full h-full rounded-full bg-white p-[1.5px]">
+   259→              <div className="w-full h-full rounded-full bg-[#EFEFEF] flex items-center justify-center">
+   260→                <span className="text-[10px] font-bold text-gradient-ig">S</span>
+   261→              </div>
+   262→            </div>
+   263→          </div>
+   264→          <span className="text-sm font-semibold text-[#262626]">spiffy_clothing_and_jewellery</span>
+   265→        </div>
+   266→        <div className="px-4 py-3">
+   267→          <p className="text-xs font-semibold text-[#262626] mb-3">🔥 2026 Navratri Trends</p>
+   268→          <div className="space-y-2.5">
+   269→            {TRENDS.map((t, i) => (
+   270→              <div key={i} className="flex items-start gap-3 p-3 bg-[#FAFAFA] rounded-xl">
+   271→                <div className="w-9 h-9 rounded-full bg-[#EFEFEF] flex items-center justify-center text-[#8E8E8E] flex-shrink-0">{t.icon}</div>
+   272→                <div>
+   273→                  <h4 className="text-[13px] font-semibold text-[#262626]">{t.title}</h4>
+   274→                  <p className="text-[12px] text-[#8E8E8E]">{t.desc}</p>
+   275→                </div>
+   276→              </div>
+   277→            ))}
+   278→          </div>
+   279→        </div>
+   280→        <div className="px-4 pb-3">
+   281→          <div className="flex items-center gap-4">
+   282→            <Heart className="w-6 h-6 text-[#262626]" />
+   283→            <MessageCircle className="w-6 h-6 text-[#262626]" />
+   284→          </div>
+   285→        </div>
+   286→      </div>
+   287→    </div>
+   288→  );
+   289→}
+   290→
+   291→/* ═══════════════════════════════════════════════════════════════ */
+   292→/*  TAB: SEARCH — Pinterest-style masonry grid                   */
+   293→/* ═══════════════════════════════════════════════════════════════ */
+   294→function SearchTab() {
+   295→  const [modal, setModal] = useState<{ src: string; title: string } | null>(null);
+   296→  const [filter, setFilter] = useState("all");
+   297→
+   298→  const filtered = filter === "all" ? PINS : filter === "chaniya" ? PINS.slice(0, 12) : PINS.slice(12);
+   299→
+   300→  return (
+   301→    <div className="pb-safe">
+   302→      {/* Search bar */}
+   303→      <div className="bg-white border-b border-[#DBDBDB] px-4 py-2 sticky top-0 z-20">
+   304→        <div className="flex items-center gap-2 bg-[#EFEFEF] rounded-xl px-3 py-2">
+   305→          <Search className="w-4 h-4 text-[#8E8E8E]" />
+   306→          <input
+   307→            type="text"
+   308→            placeholder="Search chaniya choli, jewellery..."
+   309→            className="bg-transparent text-sm text-[#262626] placeholder:text-[#8E8E8E] outline-none flex-1"
+   310→            readOnly
+   311→          />
+   312→        </div>
+   313→      </div>
+   314→
+   315→      {/* Filter chips */}
+   316→      <div className="bg-white px-4 py-2 border-b border-[#DBDBDB] flex gap-2 overflow-x-auto no-scrollbar">
+   317→        {["all", "chaniya", "jewellery"].map((f) => (
+   318→          <button
+   319→            key={f}
+   320→            onClick={() => setFilter(f)}
+   321→            className={`px-4 py-1.5 rounded-lg text-xs font-semibold capitalize transition-colors flex-shrink-0 ${
+   322→              filter === f ? "bg-[#262626] text-white" : "bg-[#EFEFEF] text-[#262626]"
+   323→            }`}
+   324→          >
+   325→            {f === "all" ? "All" : f === "chaniya" ? "👗 Chaniya Choli" : "💎 Jewellery"}
+   326→          </button>
+   327→        ))}
+   328→      </div>
+   329→
+   330→      {/* Pinterest masonry grid */}
+   331→      <div className="p-1.5">
+   332→        <div className="masonry-grid">
+   333→          {filtered.map((pin, i) => (
+   334→            <motion.div
+   335→              key={`${filter}-${i}`}
+   336→              initial={{ opacity: 0, y: 20 }}
+   337→              animate={{ opacity: 1, y: 0 }}
+   338→              transition={{ delay: i * 0.04 }}
+   339→            >
+   340→              <button
+   341→                onClick={() => setModal({ src: pin.src, title: pin.title })}
+   342→                className="w-full text-left group"
+   343→              >
+   344→                <div className={`${pin.height} relative rounded-xl overflow-hidden bg-[#EFEFEF]`}>
+   345→                  <img
+   346→                    src={pin.src}
+   347→                    alt={pin.title}
+   348→                    className="w-full h-full object-cover"
+   349→                    loading="lazy"
+   350→                  />
+   351→                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-active:opacity-100 transition-opacity" />
+   352→                  <div className="absolute top-2 right-2 opacity-0 group-active:opacity-100 transition-opacity">
+   353→                    <Bookmark className="w-5 h-5 text-white drop-shadow" />
+   354→                  </div>
+   355→                </div>
+   356→                <p className="text-[12px] font-medium text-[#262626] mt-1.5 px-0.5 leading-tight">{pin.title}</p>
+   357→                <p className="text-[10px] text-[#8E8E8E] px-0.5 flex items-center gap-1 mt-0.5">
+   358→                  <Heart className="w-3 h-3" /> {pin.likes}
+   359→                </p>
+   360→              </button>
+   361→            </motion.div>
+   362→          ))}
+   363→        </div>
+   364→      </div>
+   365→
+   366→      <ImageModal src={modal?.src || ""} title={modal?.title || ""} open={!!modal} onClose={() => setModal(null)} />
+   367→    </div>
+   368→  );
+   369→}
+   370→
+   371→/* ═══════════════════════════════════════════════════════════════ */
+   372→/*  TAB: REELS — Full-screen vertical swipe like IG Reels        */
+   373→/* ═══════════════════════════════════════════════════════════════ */
+   374→function ReelsTab() {
+   375→  const containerRef = useRef<HTMLDivElement>(null);
+   376→
+   377→  return (
+   378→    <div ref={containerRef} className="h-[calc(100dvh-60px)] overflow-y-scroll reel-snap">
+   379→      {REELS.map((reel, i) => (
+   380→        <div key={i} className="h-[calc(100dvh-60px)] relative flex-shrink-0 scroll-snap-start">
+   381→          <img src={reel.src} alt={reel.title} className="absolute inset-0 w-full h-full object-cover" />
+   382→          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
+   383→
+   384→          {/* Right side actions (like IG Reels) */}
+   385→          <div className="absolute right-3 bottom-24 flex flex-col items-center gap-5">
+   386→            <button className="flex flex-col items-center gap-0.5">
+   387→              <Heart className="w-7 h-7 text-white drop-shadow" />
+   388→              <span className="text-[10px] text-white font-medium">2.4k</span>
+   389→            </button>
+   390→            <button className="flex flex-col items-center gap-0.5">
+   391→              <MessageCircle className="w-7 h-7 text-white drop-shadow" />
+   392→              <span className="text-[10px] text-white font-medium">128</span>
+   393→            </button>
+   394→            <button className="flex flex-col items-center gap-0.5">
+   395→              <Share2 className="w-7 h-7 text-white drop-shadow" />
+   396→              <span className="text-[10px] text-white font-medium">Share</span>
+   397→            </button>
+   398→            <button className="flex flex-col items-center gap-0.5">
+   399→              <Bookmark className="w-7 h-7 text-white drop-shadow" />
+   400→              <span className="text-[10px] text-white font-medium">Save</span>
+   401→            </button>
+   402→          </div>
+   403→
+   404→          {/* Bottom info */}
+   405→          <div className="absolute bottom-6 left-4 right-16">
+   406→            <div className="flex items-center gap-2 mb-2">
+   407→              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#F58529] to-[#DD2A7B] p-[1px]">
+   408→                <div className="w-full h-full rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+   409→                  <span className="text-[10px] font-bold text-white">S</span>
+   410→                </div>
+   411→              </div>
+   412→              <span className="text-white font-semibold text-sm drop-shadow">spiffy_clothing_and_jewellery</span>
+   413→            </div>
+   414→            <h3 className="text-white font-semibold text-base drop-shadow-md">{reel.title}</h3>
+   415→            <p className="text-white/80 text-xs mt-1 drop-shadow">{reel.desc}</p>
+   416→            <a
+   417→              href={`${WA_BASE}?text=Hi%20Spiffy!%20I%20loved%20your%20${encodeURIComponent(reel.title)}`}
+   418→              target="_blank" rel="noopener noreferrer"
+   419→              className="inline-flex items-center gap-2 mt-3 px-5 py-2 bg-white/20 backdrop-blur-md rounded-lg text-white text-xs font-semibold active:bg-white/30 transition-colors"
+   420→            >
+   421→              <MessageCircle className="w-3.5 h-3.5" /> Order on WhatsApp
+   422→            </a>
+   423→          </div>
+   424→
+   425→          {/* Swipe hint (first reel only) */}
+   426→          {i === 0 && (
+   427→            <motion.div
+   428→              animate={{ y: [0, 8, 0] }}
+   429→              transition={{ duration: 2, repeat: Infinity }}
+   430→              className="absolute top-4 left-1/2 -translate-x-1/2 flex flex-col items-center"
+   431→            >
+   432→              <span className="text-white/60 text-[10px]">Swipe up</span>
+   433→              <ChevronLeft className="w-4 h-4 text-white/60 rotate-[-90deg]" />
+   434→            </motion.div>
+   435→          )}
+   436→        </div>
+   437→      ))}
+   438→    </div>
+   439→  );
+   440→}
+   441→
+   442→/* ═══════════════════════════════════════════════════════════════ */
+   443→/*  TAB: ORDERS — CTA + contact                                   */
+   444→/* ═══════════════════════════════════════════════════════════════ */
+   445→function OrdersTab() {
+   446→  return (
+   447→    <div className="pb-safe">
+   448→      {/* Header */}
+   449→      <div className="bg-white border-b border-[#DBDBDB] px-4 py-4 text-center">
+   450→        <h2 className="text-lg font-bold text-[#262626]">Place Your Order</h2>
+   451→        <p className="text-xs text-[#8E8E8E] mt-0.5">Custom chaniya choli & jewellery</p>
+   452→      </div>
+   453→
+   454→      {/* Contact options */}
+   455→      <div className="p-4 space-y-3">
+   456→        <a
+   457→          href={`${WA_BASE}?text=Hi%20Spiffy!%20I%20want%20to%20order%20custom%20chaniya%20choli%20for%20Navratri`}
+   458→          target="_blank" rel="noopener noreferrer"
+   459→          className="flex items-center gap-3 p-4 bg-white rounded-2xl border border-[#DBDBDB] active:bg-[#FAFAFA] transition-colors"
+   460→        >
+   461→          <div className="w-12 h-12 rounded-full bg-[#25D366]/10 flex items-center justify-center flex-shrink-0">
+   462→            <MessageCircle className="w-6 h-6 text-[#25D366]" />
+   463→          </div>
+   464→          <div className="flex-1">
+   465→            <p className="text-sm font-semibold text-[#262626]">WhatsApp</p>
+   466→            <p className="text-xs text-[#8E8E8E]">+91 81601 59403</p>
+   467→          </div>
+   468→          <ChevronRight className="w-4 h-4 text-[#8E8E8E]" />
+   469→        </a>
+   470→
+   471→        <a href={`tel:+${PHONE}`} className="flex items-center gap-3 p-4 bg-white rounded-2xl border border-[#DBDBDB] active:bg-[#FAFAFA] transition-colors">
+   472→          <div className="w-12 h-12 rounded-full bg-[#0095F6]/10 flex items-center justify-center flex-shrink-0">
+   473→            <Phone className="w-6 h-6 text-[#0095F6]" />
+   474→          </div>
+   475→          <div className="flex-1">
+   476→            <p className="text-sm font-semibold text-[#262626]">Call Us</p>
+   477→            <p className="text-xs text-[#8E8E8E]">+91 81601 59403</p>
+   478→          </div>
+   479→          <ChevronRight className="w-4 h-4 text-[#8E8E8E]" />
+   480→        </a>
+   481→
+   482→        <a href={IG_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-4 bg-white rounded-2xl border border-[#DBDBDB] active:bg-[#FAFAFA] transition-colors">
+   483→          <div className="w-12 h-12 rounded-full bg-[#DD2A7B]/10 flex items-center justify-center flex-shrink-0">
+   484→            <Instagram className="w-6 h-6 text-[#DD2A7B]" />
+   485→          </div>
+   486→          <div className="flex-1">
+   487→            <p className="text-sm font-semibold text-[#262626]">Instagram DM</p>
+   488→            <p className="text-xs text-[#8E8E8E]">@spiffy_clothing_and_jewellery</p>
+   489→          </div>
+   490→          <ChevronRight className="w-4 h-4 text-[#8E8E8E]" />
+   491→        </a>
+   492→      </div>
+   493→
+   494→      {/* Quick order form info */}
+   495→      <div className="px-4 pb-4">
+   496→        <div className="bg-white rounded-2xl border border-[#DBDBDB] p-4">
+   497→          <h3 className="text-sm font-bold text-[#262626] mb-3">How to Order</h3>
+   498→          {[
+   499→            { step: "1", text: "Send us your design reference or describe your dream outfit" },
+   500→            { step: "2", text: "We'll discuss fabric, size, color & budget on WhatsApp" },
+   501→            { step: "3", text: "Your custom piece is handcrafted and shipped to you!" },
+   502→          ].map((s) => (
+   503→            <div key={s.step} className="flex gap-3 mb-3 last:mb-0">
+   504→              <div className="w-7 h-7 rounded-full bg-[#EFEFEF] flex items-center justify-center flex-shrink-0">
+   505→                <span className="text-xs font-bold text-[#0095F6]">{s.step}</span>
+   506→              </div>
+   507→              <p className="text-[13px] text-[#262626] leading-relaxed pt-0.5">{s.text}</p>
+   508→            </div>
+   509→          ))}
+   510→        </div>
+   511→      </div>
+   512→
+   513→      {/* Info cards */}
+   514→      <div className="px-4 pb-4 grid grid-cols-2 gap-2.5">
+   515→        {[
+   516→          { icon: <MapPin className="w-4 h-4" />, label: "Exhibitions in Ahmedabad" },
+   517→          { icon: <Truck className="w-4 h-4" />, label: "Worldwide Shipping" },
+   518→          { icon: <Globe className="w-4 h-4" />, label: "7,226+ Happy Followers" },
+   519→          { icon: <Star className="w-4 h-4" />, label: "Custom Any Size / Design" },
+   520→        ].map((c, i) => (
+   521→          <div key={i} className="bg-white rounded-xl border border-[#DBDBDB] p-3 flex items-center gap-2.5">
+   522→            <div className="text-[#0095F6]">{c.icon}</div>
+   523→            <p className="text-[11px] font-medium text-[#262626] leading-tight">{c.label}</p>
+   524→          </div>
+   525→        ))}
+   526→      </div>
+   527→
+   528→      {/* Big CTA */}
+   529→      <div className="px-4 pb-6">
+   530→        <a
+   531→          href={`${WA_BASE}?text=Hi%20Spiffy!%20I%20want%20to%20order%20custom%20chaniya%20choli`}
+   532→          target="_blank" rel="noopener noreferrer"
+   533→          className="flex items-center justify-center gap-2 w-full py-3.5 bg-[#0095F6] text-white rounded-xl text-sm font-semibold active:opacity-80 transition-opacity shadow-sm"
+   534→        >
+   535→          <MessageCircle className="w-4 h-4" />
+   536→          Start Ordering on WhatsApp
+   537→          <Send className="w-3.5 h-3.5" />
+   538→        </a>
+   539→      </div>
+   540→    </div>
+   541→  );
+   542→}
+   543→
+   544→/* ═══════════════════════════════════════════════════════════════ */
+   545→/*  TAB: PROFILE                                                  */
+   546→/* ═══════════════════════════════════════════════════════════════ */
+   547→function ProfileTab() {
+   548→  const [showGrid, setShowGrid] = useState(true);
+   549→  return (
+   550→    <div className="pb-safe">
+   551→      <div className="bg-white px-4 pt-4 pb-2">
+   552→        <div className="flex items-center gap-4 mb-4">
+   553→          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#F58529] to-[#8134AF] p-[2.5px] flex-shrink-0">
+   554→            <div className="w-full h-full rounded-full bg-white p-[2.5px]">
+   555→              <div className="w-full h-full rounded-full bg-[#EFEFEF] flex items-center justify-center">
+   556→                <span className="text-2xl font-serif-display font-bold text-gradient-ig">S</span>
+   557→              </div>
+   558→            </div>
+   559→          </div>
+   560→          <div className="flex-1">
+   561→            <div className="flex gap-5 justify-center">
+   562→              <div className="text-center"><p className="font-bold text-lg text-[#262626]">37</p><p className="text-[10px] text-[#8E8E8E]">posts</p></div>
+   563→              <div className="text-center"><p className="font-bold text-lg text-[#262626]">7,226</p><p className="text-[10px] text-[#8E8E8E]">followers</p></div>
+   564→              <div className="text-center"><p className="font-bold text-lg text-[#262626]">1</p><p className="text-[10px] text-[#8E8E8E]">following</p></div>
+   565→            </div>
+   566→          </div>
+   567→        </div>
+   568→        <h2 className="font-semibold text-sm text-[#262626]">Spiffy Clothing & Jewellery</h2>
+   569→        <p className="text-[13px] text-[#262626] mt-1 leading-[1.4]">
+   570→          🦁 Navratri & Festive Collections<br />
+   571→          📍 Exhibitions in Ahmedabad<br />
+   572→          🚚 Worldwide Shipping<br />
+   573→          👋 Call: +91 81601 59403
+   574→        </p>
+   575→        <div className="flex gap-2 mt-3">
+   576→          <a href={`${WA_BASE}?text=Hi%20Spiffy!`} target="_blank" rel="noopener noreferrer"
+   577→            className="flex-1 py-1.5 bg-[#0095F6] text-white text-xs font-semibold rounded-lg text-center active:opacity-80">
+   578→            Order Now
+   579→          </a>
+   580→          <a href={IG_URL} target="_blank" rel="noopener noreferrer"
+   581→            className="flex-1 py-1.5 bg-[#EFEFEF] text-[#262626] text-xs font-semibold rounded-lg text-center active:bg-[#DBDBDB]">
+   582→            Instagram
+   583→          </a>
+   584→        </div>
+   585→      </div>
+   586→
+   587→      {/* Grid/Reel toggle */}
+   588→      <div className="bg-white border-b border-[#DBDBDB] flex">
+   589→        <button onClick={() => setShowGrid(true)} className={`flex-1 py-2.5 flex justify-center ${showGrid ? "border-b-2 border-[#262626]" : ""}`}>
+   590→          <Grid3X3 className="w-5 h-5 text-[#262626]" />
+   591→        </button>
+   592→        <button onClick={() => setShowGrid(false)} className={`flex-1 py-2.5 flex justify-center ${!showGrid ? "border-b-2 border-[#262626]" : ""}`}>
+   593→          <Film className="w-5 h-5 text-[#262626]" />
+   594→        </button>
+   595→      </div>
+   596→
+   597→      {/* Grid view */}
+   598→      {showGrid && (
+   599→        <div className="grid grid-cols-3 gap-0.5">
+   600→          {PINS.map((pin, i) => (
+   601→            <div key={i} className="aspect-square relative bg-[#EFEFEF]">
+   602→              <img src={pin.src} alt={pin.title} className="w-full h-full object-cover" loading="lazy" />
+   603→            </div>
+   604→          ))}
+   605→        </div>
+   606→      )}
+   607→
+   608→      {/* Reels view */}
+   609→      {!showGrid && (
+   610→        <div className="grid grid-cols-3 gap-0.5">
+   611→          {REELS.map((reel, i) => (
+   612→            <div key={i} className="aspect-[9/16] relative bg-[#EFEFEF]">
+   613→              <img src={reel.src} alt={reel.title} className="w-full h-full object-cover" loading="lazy" />
+   614→              <div className="absolute inset-0 flex items-center justify-center">
+   615→                <Film className="w-6 h-6 text-white drop-shadow" />
+   616→              </div>
+   617→            </div>
+   618→          ))}
+   619→          {REELS.map((reel, i) => (
+   620→            <div key={`dup-${i}`} className="aspect-[9/16] relative bg-[#EFEFEF]">
+   621→              <img src={reel.src} alt="" className="w-full h-full object-cover opacity-60" loading="lazy" />
+   622→              <div className="absolute inset-0 flex items-center justify-center">
+   623→                <Film className="w-6 h-6 text-white drop-shadow" />
+   624→              </div>
+   625→            </div>
+   626→          ))}
+   627→        </div>
+   628→      )}
+   629→    </div>
+   630→  );
+   631→}
+   632→
+   633→/* ═══════════════════════════════════════════════════════════════ */
+   634→/*  BOTTOM NAVIGATION — Instagram style                            */
+   635→/* ═══════════════════════════════════════════════════════════════ */
+   636→function BottomNav({ active, onChange }: { active: Tab; onChange: (t: Tab) => void }) {
+   637→  const items: { tab: Tab; icon: React.ReactNode; label: string }[] = [
+   638→    { tab: "home", icon: <HomeIcon className="w-6 h-6" />, label: "Home" },
+   639→    { tab: "search", icon: <Search className="w-6 h-6" />, label: "Search" },
+   640→    { tab: "reels", icon: <Film className="w-6 h-6" />, label: "Reels" },
+   641→    { tab: "orders", icon: <PlusSquare className="w-6 h-6" />, label: "Order" },
+   642→    { tab: "profile", icon: <div className="w-6 h-6 rounded-full border-2 border-[#262626] bg-gradient-to-br from-[#F58529] to-[#DD2A7B] p-[0.5px]"><div className="w-full h-full rounded-full bg-[#FAFAFA] flex items-center justify-center"><span className="text-[8px] font-bold text-[#262626]">S</span></div></div>, label: "Profile" },
+   643→  ];
+   644→
+   645→  return (
+   646→    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-[#DBDBDB] h-[60px] flex items-center justify-around px-2" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+   647→      {items.map((item) => (
+   648→        <button
+   649→          key={item.tab}
+   650→          onClick={() => onChange(item.tab)}
+   651→          className="flex flex-col items-center justify-center py-1 px-3 min-w-[48px] active:opacity-60 transition-opacity"
+   652→          aria-label={item.label}
+   653→        >
+   654→          <div className={active === item.tab ? "text-[#262626]" : "text-[#8E8E8E]"}>
+   655→            {item.icon}
+   656→          </div>
+   657→        </button>
+   658→      ))}
+   659→    </nav>
+   660→  );
+   661→}
+   662→
+   663→/* ═══════════════════════════════════════════════════════════════ */
+   664→/*  MAIN PAGE                                                    */
+   665→/* ═══════════════════════════════════════════════════════════════ */
+   666→export default function Home() {
+   667→  const [activeTab, setActiveTab] = useState<Tab>("home");
+   668→
+   669→  return (
+   670→    <main className="min-h-[100dvh] bg-[#FAFAFA] font-sans-body">
+   671→      {/* Top bar — Instagram style */}
+   672→      <header className="sticky top-0 z-30 bg-white border-b border-[#DBDBDB] h-[48px] flex items-center px-4">
+   673→        <h1 className="font-serif-display text-xl font-bold text-gradient-ig">Spiffy</h1>
+   674→        <div className="flex-1" />
+   675→        <a href={`${WA_BASE}?text=Hi%20Spiffy!`} target="_blank" rel="noopener noreferrer" className="active:opacity-60">
+   676→          <Heart className="w-6 h-6 text-[#262626]" />
+   677→        </a>
+   678→        <a href={`${WA_BASE}?text=Hi%20Spiffy!`} target="_blank" rel="noopener noreferrer" className="ml-4 active:opacity-60">
+   679→          <MessageCircle className="w-6 h-6 text-[#262626]" />
+   680→        </a>
+   681→      </header>
+   682→
+   683→      {/* Tab content */}
+   684→      <AnimatePresence mode="wait">
+   685→        {activeTab === "home" && <motion.div key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}><HomeTab /></motion.div>}
+   686→        {activeTab === "search" && <motion.div key="search" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}><SearchTab /></motion.div>}
+   687→        {activeTab === "reels" && <motion.div key="reels" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}><ReelsTab /></motion.div>}
+   688→        {activeTab === "orders" && <motion.div key="orders" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}><OrdersTab /></motion.div>}
+   689→        {activeTab === "profile" && <motion.div key="profile" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}><ProfileTab /></motion.div>}
+   690→      </AnimatePresence>
+   691→
+   692→      {/* Bottom navigation */}
+   693→      <BottomNav active={activeTab} onChange={setActiveTab} />
+   694→
+   695→      {/* Floating WhatsApp (only on home/orders tab) */}
+   696→      {(activeTab === "home" || activeTab === "orders") && (
+   697→        <motion.a
+   698→          href={`${WA_BASE}?text=Hi%20Spiffy!%20I%20saw%20your%20website`}
+   699→          target="_blank" rel="noopener noreferrer"
+   700→          initial={{ scale: 0 }}
+   701→          animate={{ scale: 1 }}
+   702→          className="fixed bottom-[72px] right-4 z-30 w-12 h-12 bg-[#25D366] rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform"
+   703→          aria-label="WhatsApp"
+   704→        >
+   705→          <MessageCircle className="w-5 h-5 text-white fill-white" />
+   706→        </motion.a>
+   707→      )}
+   708→    </main>
+   709→  );
+   710→}
