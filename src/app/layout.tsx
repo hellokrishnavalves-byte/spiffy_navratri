@@ -48,7 +48,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#8B1A1A",
+  themeColor: "#FFF9F0",
 };
 
 export default function RootLayout({
@@ -62,8 +62,8 @@ export default function RootLayout({
         className={`${playfair.variable} ${poppins.variable} antialiased`}
         style={{
           fontFamily: "var(--font-poppins), sans-serif",
-          background: "#0a0505",
-          color: "#fef3e2",
+          background: "#FFF9F0",
+          color: "#3D1A0A",
         }}
       >
         {children}

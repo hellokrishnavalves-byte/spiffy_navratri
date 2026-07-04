@@ -1,0 +1,886 @@
+     1→"use client";
+     2→
+     3→import { useState, useRef, useEffect } from "react";
+     4→import { motion, useInView, AnimatePresence } from "framer-motion";
+     5→import {
+     6→  Sparkles,
+     7→  Star,
+     8→  Heart,
+     9→  Instagram,
+    10→  Phone,
+    11→  MessageCircle,
+    12→  ChevronRight,
+    13→  ChevronLeft,
+    14→  Palette,
+    15→  Ruler,
+    16→  Scissors,
+    17→  Gem,
+    18→  Flame,
+    19→  ArrowDown,
+    20→  X,
+    21→  ExternalLink,
+    22→  Send,
+    23→} from "lucide-react";
+    24→
+    25→/* ─── Image Data ─── */
+    26→const CHANIYA_IMAGES = [
+    27→  {
+    28→    src: "https://sfile.chatglm.cn/images-ppt/60a5ce0fae2e.jpg",
+    29→    title: "Royal Bandhani",
+    30→    desc: "Vibrant patterned traditional outfit",
+    31→  },
+    32→  {
+    33→    src: "https://sfile.chatglm.cn/images-ppt/10cde675d093.png",
+    34→    title: "Garba Queen",
+    35→    desc: "Embroidered dress with garba sticks",
+    36→  },
+    37→  {
+    38→    src: "https://sfile.chatglm.cn/images-ppt/b5886ad09b0a.jpeg",
+    39→    title: "Tiered Elegance",
+    40→    desc: "Colorful tiered skirt with embroidered jacket",
+    41→  },
+    42→  {
+    43→    src: "https://sfile.chatglm.cn/images-ppt/c124a55fa892.jpg",
+    44→    title: "Ornate Heritage",
+    45→    desc: "Rich traditional outfit in ornate setting",
+    46→  },
+    47→  {
+    48→    src: "https://sfile.chatglm.cn/images-ppt/0bfa986a39f7.webp",
+    49→    title: "Rajasthani Dream",
+    50→    desc: "Vibrant outfit against scenic backdrop",
+    51→  },
+    52→  {
+    53→    src: "https://sfile.chatglm.cn/images-ppt/6c80b6982f1c.jpg",
+    54→    title: "Garden Princess",
+    55→    desc: "Red lehenga with patterned dupatta",
+    56→  },
+    57→  {
+    58→    src: "https://sfile.chatglm.cn/images-ppt/d4e2d0620af1.jpg",
+    59→    title: "Mirror Glow",
+    60→    desc: "Green & yellow lehenga with mirror work",
+    61→  },
+    62→  {
+    63→    src: "https://sfile.chatglm.cn/images-ppt/61a4b876cbc3.png",
+    64→    title: "Festive Glam",
+    65→    desc: "Intricate embroidery on vibrant fabric",
+    66→  },
+    67→];
+    68→
+    69→const JEWELLERY_IMAGES = [
+    70→  {
+    71→    src: "https://sfile.chatglm.cn/images-ppt/8cb73d7a1f7b.jpg",
+    72→    title: "Kundan Royal Set",
+    73→    desc: "Gold with red & white gemstones",
+    74→  },
+    75→  {
+    76→    src: "https://sfile.chatglm.cn/images-ppt/e524710e5df1.jpeg",
+    77→    title: "Pearl Choker Set",
+    78→    desc: "Crystal & pearl choker with tikka",
+    79→  },
+    80→  {
+    81→    src: "https://sfile.chatglm.cn/images-ppt/e8f41674c678.jpg",
+    82→    title: "Temple Gold Set",
+    83→    desc: "Gold, pearl & white stone necklace",
+    84→  },
+    85→  {
+    86→    src: "https://sfile.chatglm.cn/images-ppt/0b320701fcdc.jpg",
+    87→    desc: "Turquoise & pink bead jewellery",
+    88→    title: "Boho Silver Set",
+    89→  },
+    90→  {
+    91→    src: "https://sfile.chatglm.cn/images-ppt/86d4a8102946.jpeg",
+    92→    title: "Heritage Kundan",
+    93→    desc: "Gold with clear gemstones & enamel",
+    94→  },
+    95→  {
+    96→    src: "https://sfile.chatglm.cn/images-ppt/7429c00ec318.png",
+    97→    title: "Bridal Gold Set",
+    98→    desc: "Heavy gold jewellery with white outfit",
+    99→  },
+   100→];
+   101→
+   102→const NINE_COLORS = [
+   103→  { day: 1, name: "Day 1", color: "Yellow", hex: "#FFD700", goddess: "Shailputri", desc: "Bright & auspicious" },
+   104→  { day: 2, name: "Day 2", color: "Green", hex: "#228B22", goddess: "Brahmacharini", desc: "Nature & growth" },
+   105→  { day: 3, name: "Day 3", color: "Grey", hex: "#808080", goddess: "Chandraghanta", desc: "Balance & calm" },
+   106→  { day: 4, name: "Day 4", color: "Orange", hex: "#FF6B35", goddess: "Kushmanda", desc: "Energy & warmth" },
+   107→  { day: 5, name: "Day 5", color: "White", hex: "#F5F5F0", goddess: "Skandamata", desc: "Purity & peace" },
+   108→  { day: 6, name: "Day 6", color: "Red", hex: "#DC143C", goddess: "Katyayani", desc: "Power & passion" },
+   109→  { day: 7, name: "Day 7", color: "Royal Blue", hex: "#1E3A8A", goddess: "Kaalratri", desc: "Strength & depth" },
+   110→  { day: 8, name: "Day 8", color: "Pink", hex: "#FF69B4", goddess: "Mahagauri", desc: "Grace & beauty" },
+   111→  { day: 9, name: "Day 9", color: "Purple", hex: "#7B2D8E", goddess: "Siddhidatri", desc: "Royalty & devotion" },
+   112→];
+   113→
+   114→const TRENDS = [
+   115→  { icon: <Sparkles className="w-5 h-5" />, title: "Bandhani Revival", desc: "Traditional tie-dye patterns in bold new color combos are the rage this season." },
+   116→  { icon: <Scissors className="w-5 h-5" />, title: "Cape Blouses", desc: "One-shoulder cuts, cape overlays & cold-shoulder styles redefine the choli." },
+   117→  { icon: <Palette className="w-5 h-5" />, title: "Pastel Power", desc: "Soft pastels meet mirror work for a dreamy, modern Garba look." },
+   118→  { icon: <Gem className="w-5 h-5" />, title: "Kundan Layers", desc: "Layered kundan necklaces & temple jewellery dominate 2026 festive styling." },
+   119→  { icon: <Ruler className="w-5 h-5" />, title: "Chinon Fabric", desc: "Lightweight Chinon with heavy embroidery — comfort meets grandeur." },
+   120→  { icon: <Flame className="w-5 h-5" />, title: "Mirror Magic", desc: "Abla mirror work & Gotapatti create dazzling dance-ready outfits." },
+   121→];
+   122→
+   123→/* ─── Reusable: Section wrapper ─── */
+   124→function Section({
+   125→  children,
+   126→  className = "",
+   127→  id,
+   128→}: {
+   129→  children: React.ReactNode;
+   130→  className?: string;
+   131→  id?: string;
+   132→}) {
+   133→  const ref = useRef(null);
+   134→  const isInView = useInView(ref, { once: true, margin: "-60px" });
+   135→
+   136→  return (
+   137→    <motion.section
+   138→      id={id}
+   139→      ref={ref}
+   140→      initial={{ opacity: 0, y: 40 }}
+   141→      animate={isInView ? { opacity: 1, y: 0 } : {}}
+   142→      transition={{ duration: 0.7, ease: "easeOut" }}
+   143→      className={`px-5 py-6 ${className}`}
+   144→    >
+   145→      {children}
+   146→    </motion.section>
+   147→  );
+   148→}
+   149→
+   150→/* ─── Horizontal scroll with arrow buttons ─── */
+   151→function HorizontalScroll({
+   152→  children,
+   153→  className = "",
+   154→}: {
+   155→  children: React.ReactNode;
+   156→  className?: string;
+   157→}) {
+   158→  const scrollRef = useRef<HTMLDivElement>(null);
+   159→
+   160→  const scroll = (dir: "left" | "right") => {
+   161→    if (!scrollRef.current) return;
+   162→    const amount = scrollRef.current.clientWidth * 0.75;
+   163→    scrollRef.current.scrollBy({
+   164→      left: dir === "left" ? -amount : amount,
+   165→      behavior: "smooth",
+   166→    });
+   167→  };
+   168→
+   169→  return (
+   170→    <div className="relative group">
+   171→      <button
+   172→        onClick={() => scroll("left")}
+   173→        className="absolute left-1 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/60 border border-[var(--border)] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm active:scale-90"
+   174→        aria-label="Scroll left"
+   175→      >
+   176→        <ChevronLeft className="w-4 h-4 text-[var(--primary)]" />
+   177→      </button>
+   178→      <div
+   179→        ref={scrollRef}
+   180→        className={`flex gap-3 overflow-x-auto no-scrollbar scroll-snap-x pb-2 ${className}`}
+   181→      >
+   182→        {children}
+   183→      </div>
+   184→      <button
+   185→        onClick={() => scroll("right")}
+   186→        className="absolute right-1 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/60 border border-[var(--border)] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm active:scale-90"
+   187→        aria-label="Scroll right"
+   188→      >
+   189→        <ChevronRight className="w-4 h-4 text-[var(--primary)]" />
+   190→      </button>
+   191→    </div>
+   192→  );
+   193→}
+   194→
+   195→/* ─── Image Modal ─── */
+   196→function ImageModal({
+   197→  src,
+   198→  title,
+   199→  open,
+   200→  onClose,
+   201→}: {
+   202→  src: string;
+   203→  title: string;
+   204→  open: boolean;
+   205→  onClose: () => void;
+   206→}) {
+   207→  if (!open) return null;
+   208→  return (
+   209→    <AnimatePresence>
+   210→      {open && (
+   211→        <motion.div
+   212→          initial={{ opacity: 0 }}
+   213→          animate={{ opacity: 1 }}
+   214→          exit={{ opacity: 0 }}
+   215→          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+   216→          onClick={onClose}
+   217→        >
+   218→          <button
+   219→            onClick={onClose}
+   220→            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center z-10"
+   221→            aria-label="Close"
+   222→          >
+   223→            <X className="w-5 h-5 text-white" />
+   224→          </button>
+   225→          <motion.div
+   226→            initial={{ scale: 0.8, opacity: 0 }}
+   227→            animate={{ scale: 1, opacity: 1 }}
+   228→            transition={{ type: "spring", damping: 25 }}
+   229→            className="max-w-[90vw] max-h-[85vh] relative"
+   230→            onClick={(e) => e.stopPropagation()}
+   231→          >
+   232→            <img
+   233→              src={src}
+   234→              alt={title}
+   235→              className="max-h-[80vh] w-auto rounded-2xl object-contain"
+   236→            />
+   237→            <p className="text-center mt-3 text-[var(--primary)] font-serif-display text-lg font-semibold">
+   238→              {title}
+   239→            </p>
+   240→          </motion.div>
+   241→        </motion.div>
+   242→      )}
+   243→    </AnimatePresence>
+   244→  );
+   245→}
+   246→
+   247→/* ─── Main Page ─── */
+   248→export default function Home() {
+   249→  const [modal, setModal] = useState<{ src: string; title: string } | null>(null);
+   250→  const [activeColorIdx, setActiveColorIdx] = useState(0);
+   251→  const colorScrollRef = useRef<HTMLDivElement>(null);
+   252→
+   253→  useEffect(() => {
+   254→    if (!colorScrollRef.current) return;
+   255→    const container = colorScrollRef.current;
+   256→    const cardWidth = container.firstElementChild?.getBoundingClientRect().width || 120;
+   257→    container.scrollTo({ left: activeColorIdx * (cardWidth + 12) - 20, behavior: "smooth" });
+   258→  }, [activeColorIdx]);
+   259→
+   260→  return (
+   261→    <main className="min-h-screen font-sans-body relative overflow-x-hidden">
+   262→      {/* ═══ Decorative background ═══ */}
+   263→      <div className="fixed inset-0 pointer-events-none z-0">
+   264→        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-[#1a0505] via-[#0a0505] to-[#0a0505]" />
+   265→        <div className="absolute top-20 right-0 w-72 h-72 bg-[#d4a017]/5 rounded-full blur-[100px]" />
+   266→        <div className="absolute top-96 -left-20 w-60 h-60 bg-[#8B1A1A]/10 rounded-full blur-[80px]" />
+   267→        <div className="absolute bottom-40 right-10 w-48 h-48 bg-[#e8632b]/5 rounded-full blur-[80px]" />
+   268→      </div>
+   269→
+   270→      {/* ═══ HERO SECTION ═══ */}
+   271→      <section className="relative min-h-[100dvh] flex flex-col justify-end pb-8 px-5 pt-16 z-10">
+   272→        {/* Hero background image */}
+   273→        <div className="absolute inset-0 z-0">
+   274→          <img
+   275→            src="https://sfile.chatglm.cn/images-ppt/efc074bc5101.jpg"
+   276→            alt="Navratri dancer"
+   277→            className="w-full h-full object-cover"
+   278→          />
+   279→          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0505] via-[#0a0505]/70 to-[#0a0505]/30" />
+   280→        </div>
+   281→
+   282→        <div className="relative z-10">
+   283→          {/* Floating decorative element */}
+   284→          <motion.div
+   285→            animate={{ y: [0, -8, 0], rotate: [0, 5, 0] }}
+   286→            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+   287→            className="mb-6"
+   288→          >
+   289→            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#d4a017] to-[#e8632b] flex items-center justify-center shadow-lg">
+   290→              <Sparkles className="w-7 h-7 text-[#0a0505]" />
+   291→            </div>
+   292→          </motion.div>
+   293→
+   294→          <motion.p
+   295→            initial={{ opacity: 0, x: -20 }}
+   296→            animate={{ opacity: 1, x: 0 }}
+   297→            transition={{ delay: 0.2 }}
+   298→            className="text-[var(--muted-foreground)] text-xs tracking-[0.3em] uppercase mb-3 font-medium"
+   299→          >
+   300→            Navratri 2026 Collection
+   301→          </motion.p>
+   302→
+   303→          <motion.h1
+   304→            initial={{ opacity: 0, y: 20 }}
+   305→            animate={{ opacity: 1, y: 0 }}
+   306→            transition={{ delay: 0.4, duration: 0.8 }}
+   307→            className="font-serif-display text-5xl font-bold leading-[1.1] mb-2"
+   308→          >
+   309→            <span className="text-gradient-gold">Spiffy</span>
+   310→          </motion.h1>
+   311→          <motion.h2
+   312→            initial={{ opacity: 0, y: 20 }}
+   313→            animate={{ opacity: 1, y: 0 }}
+   314→            transition={{ delay: 0.6, duration: 0.8 }}
+   315→            className="font-serif-display text-3xl font-semibold text-[var(--foreground)] mb-4"
+   316→          >
+   317→            by Bhoomi Panchal
+   318→          </motion.h2>
+   319→
+   320→          <motion.p
+   321→            initial={{ opacity: 0, y: 20 }}
+   322→            animate={{ opacity: 1, y: 0 }}
+   323→            transition={{ delay: 0.8 }}
+   324→            className="text-[var(--muted-foreground)] text-sm leading-relaxed max-w-xs mb-6"
+   325→          >
+   326→            Custom designer chaniya choli & jewellery for the perfect Garba night. 
+   327→            Any size. Any design. Any color.
+   328→          </motion.p>
+   329→
+   330→          <motion.div
+   331→            initial={{ opacity: 0, y: 20 }}
+   332→            animate={{ opacity: 1, y: 0 }}
+   333→            transition={{ delay: 1.0 }}
+   334→            className="flex gap-3"
+   335→          >
+   336→            <a
+   337→              href="https://wa.me/919876543210?text=Hi%20Bhoomi!%20I%20want%20to%20order%20custom%20chaniya%20choli"
+   338→              target="_blank"
+   339→              rel="noopener noreferrer"
+   340→              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#d4a017] to-[#e8a820] text-[#0a0505] rounded-full text-sm font-semibold active:scale-95 transition-transform shadow-lg shadow-[#d4a017]/20"
+   341→            >
+   342→              <MessageCircle className="w-4 h-4" />
+   343→              Order on WhatsApp
+   344→            </a>
+   345→            <a
+   346→              href="https://www.instagram.com/spiffy_clothing_and_jewellery"
+   347→              target="_blank"
+   348→              rel="noopener noreferrer"
+   349→              className="inline-flex items-center gap-2 px-5 py-3 border border-[var(--border)] text-[var(--foreground)] rounded-full text-sm font-medium active:scale-95 transition-transform backdrop-blur-sm"
+   350→            >
+   351→              <Instagram className="w-4 h-4" />
+   352→              <span className="hidden sm:inline">Follow</span>
+   353→            </a>
+   354→          </motion.div>
+   355→
+   356→          <motion.div
+   357→            animate={{ y: [0, 8, 0] }}
+   358→            transition={{ duration: 2, repeat: Infinity }}
+   359→            className="mt-10 flex justify-center"
+   360→          >
+   361→            <ArrowDown className="w-5 h-5 text-[var(--muted-foreground)]" />
+   362→          </motion.div>
+   363→        </div>
+   364→      </section>
+   365→
+   366→      {/* ═══ 9 COLORS OF NAVRATRI ═══ */}
+   367→      <Section id="colors">
+   368→        <div className="mb-5">
+   369→          <p className="text-[var(--accent)] text-xs tracking-[0.25em] uppercase mb-1 font-medium">
+   370→            Navratri 2026 &bull; Oct 11 – 19
+   371→          </p>
+   372→          <h2 className="font-serif-display text-2xl font-bold">
+   373→            9 Nights, 9 <span className="text-gradient-festive">Colors</span>
+   374→          </h2>
+   375→        </div>
+   376→
+   377→        {/* Color selector strip */}
+   378→        <div ref={colorScrollRef} className="flex gap-3 overflow-x-auto no-scrollbar mb-4 pb-1">
+   379→          {NINE_COLORS.map((c, i) => (
+   380→            <button
+   381→              key={c.day}
+   382→              onClick={() => setActiveColorIdx(i)}
+   383→              className={`flex-shrink-0 flex flex-col items-center gap-1.5 transition-all duration-300 ${
+   384→                activeColorIdx === i ? "scale-110" : "opacity-50 hover:opacity-80"
+   385→              }`}
+   386→              aria-label={`Day ${c.day} - ${c.color}`}
+   387→            >
+   388→              <div
+   389→                className={`w-10 h-10 rounded-full border-2 transition-all duration-300 ${
+   390→                  activeColorIdx === i
+   391→                    ? "border-[var(--primary)] shadow-lg scale-110"
+   392→                    : "border-transparent"
+   393→                }`}
+   394→                style={{ backgroundColor: c.hex }}
+   395→              />
+   396→              <span className="text-[10px] text-[var(--muted-foreground)] font-medium">
+   397→                {c.day}
+   398→              </span>
+   399→            </button>
+   400→          ))}
+   401→        </div>
+   402→
+   403→        {/* Active color detail card */}
+   404→        <AnimatePresence mode="wait">
+   405→          <motion.div
+   406→            key={activeColorIdx}
+   407→            initial={{ opacity: 0, y: 15, scale: 0.97 }}
+   408→            animate={{ opacity: 1, y: 0, scale: 1 }}
+   409→            exit={{ opacity: 0, y: -10, scale: 0.97 }}
+   410→            transition={{ duration: 0.35 }}
+   411→            className="bg-card-glass rounded-2xl p-5 glow-gold"
+   412→          >
+   413→            <div className="flex items-start gap-4">
+   414→              <div
+   415→                className="w-16 h-16 rounded-2xl flex-shrink-0 flex items-center justify-center shadow-inner"
+   416→                style={{ backgroundColor: NINE_COLORS[activeColorIdx].hex }}
+   417→              >
+   418→                <span className="text-[#0a0505] font-bold text-lg font-serif-display">
+   419→                  {NINE_COLORS[activeColorIdx].day}
+   420→                </span>
+   421→              </div>
+   422→              <div className="flex-1 min-w-0">
+   423→                <div className="flex items-center gap-2 mb-1">
+   424→                  <h3 className="font-serif-display text-xl font-bold text-[var(--foreground)]">
+   425→                    {NINE_COLORS[activeColorIdx].color}
+   426→                  </h3>
+   427→                  <span className="text-[var(--muted-foreground)] text-xs">
+   428→                    &bull; {NINE_COLORS[activeColorIdx].name}
+   429→                  </span>
+   430→                </div>
+   431→                <p className="text-[var(--primary)] text-xs tracking-wider uppercase mb-2 font-medium">
+   432→                  Maa {NINE_COLORS[activeColorIdx].goddess}
+   433→                </p>
+   434→                <p className="text-[var(--muted-foreground)] text-sm leading-relaxed">
+   435→                  {NINE_COLORS[activeColorIdx].desc}
+   436→                </p>
+   437→                <p className="text-xs text-[var(--muted-foreground)] mt-2 opacity-70">
+   438→                  We design matching chaniya choli & jewellery in every color!
+   439→                </p>
+   440→              </div>
+   441→            </div>
+   442→          </motion.div>
+   443→        </AnimatePresence>
+   444→      </Section>
+   445→
+   446→      {/* ═══ ABOUT BHOOMI ═══ */}
+   447→      <Section>
+   448→        <div className="bg-card-glass rounded-2xl overflow-hidden glow-red">
+   449→          <div className="relative h-48">
+   450→            <img
+   451→              src="https://sfile.chatglm.cn/images-ppt/6fe4652a12a8.png"
+   452→              alt="Festive marigold and diyas"
+   453→              className="w-full h-full object-cover"
+   454→            />
+   455→            <div className="absolute inset-0 bg-gradient-to-t from-[#1a0e0e] to-transparent" />
+   456→            <div className="absolute bottom-4 left-5 right-5">
+   457→              <div className="flex items-center gap-2 mb-1">
+   458→                <Star className="w-3.5 h-3.5 text-[var(--primary)] fill-[var(--primary)]" />
+   459→                <span className="text-[var(--primary)] text-xs tracking-[0.2em] uppercase font-medium">
+   460→                  The Designer
+   461→                </span>
+   462→              </div>
+   463→              <h2 className="font-serif-display text-2xl font-bold">Bhoomi Panchal</h2>
+   464→            </div>
+   465→          </div>
+   466→          <div className="p-5 pt-3">
+   467→            <p className="text-[var(--muted-foreground)] text-sm leading-[1.8]">
+   468→              Fashion designer specializing in custom Navratri chaniya choli & jewellery. 
+   469→              Every piece is handcrafted with love — from intricate Bandhani and mirror work 
+   470→              to stunning Kundan and temple jewellery sets. I believe every woman deserves to 
+   471→              feel like a queen on the Garba dance floor.
+   472→            </p>
+   473→            <div className="flex gap-3 mt-4">
+   474→              <div className="flex-1 bg-[var(--muted)] rounded-xl p-3 text-center">
+   475→                <p className="text-[var(--primary)] font-serif-display text-xl font-bold">Any</p>
+   476→                <p className="text-[var(--muted-foreground)] text-[10px] uppercase tracking-wider mt-0.5">Size</p>
+   477→              </div>
+   478→              <div className="flex-1 bg-[var(--muted)] rounded-xl p-3 text-center">
+   479→                <p className="text-[var(--primary)] font-serif-display text-xl font-bold">Any</p>
+   480→                <p className="text-[var(--muted-foreground)] text-[10px] uppercase tracking-wider mt-0.5">Design</p>
+   481→              </div>
+   482→              <div className="flex-1 bg-[var(--muted)] rounded-xl p-3 text-center">
+   483→                <p className="text-[var(--primary)] font-serif-display text-xl font-bold">Any</p>
+   484→                <p className="text-[var(--muted-foreground)] text-[10px] uppercase tracking-wider mt-0.5">Color</p>
+   485→              </div>
+   486→            </div>
+   487→          </div>
+   488→        </div>
+   489→      </Section>
+   490→
+   491→      {/* ═══ CHANIYA CHOLI COLLECTION ═══ */}
+   492→      <Section>
+   493→        <div className="mb-5">
+   494→          <p className="text-[var(--accent)] text-xs tracking-[0.25em] uppercase mb-1 font-medium">
+   495→            Handcrafted with Love
+   496→          </p>
+   497→          <h2 className="font-serif-display text-2xl font-bold">
+   498→            Chaniya Choli <span className="text-gradient-gold">Collection</span>
+   499→          </h2>
+   500→          <p className="text-[var(--muted-foreground)] text-sm mt-1.5">
+   501→            Swipe to explore our Navratri 2026 designs
+   502→          </p>
+   503→        </div>
+   504→
+   505→        <HorizontalScroll>
+   506→          {CHANIYA_IMAGES.map((item, i) => (
+   507→            <motion.div
+   508→              key={i}
+   509→              initial={{ opacity: 0, x: 30 }}
+   510→              whileInView={{ opacity: 1, x: 0 }}
+   511→              viewport={{ once: true }}
+   512→              transition={{ delay: i * 0.08 }}
+   513→              className="flex-shrink-0 w-[200px] scroll-snap-start"
+   514→            >
+   515→              <button
+   516→                onClick={() => setModal({ src: item.src, title: item.title })}
+   517→                className="w-full text-left group"
+   518→              >
+   519→                <div className="relative aspect-[3/4] rounded-2xl overflow-hidden mb-2.5 bg-card-glass">
+   520→                  <img
+   521→                    src={item.src}
+   522→                    alt={item.title}
+   523→                    className="w-full h-full object-cover transition-transform duration-500 group-active:scale-105"
+   524→                    loading="lazy"
+   525→                  />
+   526→                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+   527→                  <div className="absolute bottom-3 left-3 right-3">
+   528→                    <h3 className="font-serif-display text-sm font-semibold text-white">
+   529→                      {item.title}
+   530→                    </h3>
+   531→                    <p className="text-white/70 text-[10px] mt-0.5">{item.desc}</p>
+   532→                  </div>
+   533→                  <div className="absolute top-3 right-3 w-7 h-7 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center">
+   534→                    <ExternalLink className="w-3 h-3 text-white/80" />
+   535→                  </div>
+   536→                </div>
+   537→              </button>
+   538→            </motion.div>
+   539→          ))}
+   540→        </HorizontalScroll>
+   541→      </Section>
+   542→
+   543→      {/* ═══ JEWELLERY COLLECTION ═══ */}
+   544→      <Section>
+   545→        <div className="mb-5">
+   546→          <p className="text-[var(--accent)] text-xs tracking-[0.25em] uppercase mb-1 font-medium">
+   547→            Complete Your Look
+   548→          </p>
+   549→          <h2 className="font-serif-display text-2xl font-bold">
+   550→            Jewellery <span className="text-gradient-gold">Collection</span>
+   551→          </h2>
+   552→          <p className="text-[var(--muted-foreground)] text-sm mt-1.5">
+   553→            Kundan, Temple, Oxidised & more
+   554→          </p>
+   555→        </div>
+   556→
+   557→        <div className="grid grid-cols-2 gap-3">
+   558→          {JEWELLERY_IMAGES.map((item, i) => (
+   559→            <motion.div
+   560→              key={i}
+   561→              initial={{ opacity: 0, scale: 0.95 }}
+   562→              whileInView={{ opacity: 1, scale: 1 }}
+   563→              viewport={{ once: true }}
+   564→              transition={{ delay: i * 0.1 }}
+   565→            >
+   566→              <button
+   567→                onClick={() => setModal({ src: item.src, title: item.title })}
+   568→                className="w-full text-left group"
+   569→              >
+   570→                <div className="relative aspect-square rounded-2xl overflow-hidden bg-card-glass">
+   571→                  <img
+   572→                    src={item.src}
+   573→                    alt={item.title}
+   574→                    className="w-full h-full object-cover transition-transform duration-500 group-active:scale-105"
+   575→                    loading="lazy"
+   576→                  />
+   577→                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+   578→                  <div className="absolute bottom-2.5 left-2.5 right-2.5">
+   579→                    <h3 className="font-serif-display text-xs font-semibold text-white">
+   580→                      {item.title}
+   581→                    </h3>
+   582→                    <p className="text-white/60 text-[9px] mt-0.5">{item.desc}</p>
+   583→                  </div>
+   584→                </div>
+   585→              </button>
+   586→            </motion.div>
+   587→          ))}
+   588→        </div>
+   589→      </Section>
+   590→
+   591→      {/* ═══ 2026 TRENDS ═══ */}
+   592→      <Section>
+   593→        <div className="mb-5">
+   594→          <p className="text-[var(--accent)] text-xs tracking-[0.25em] uppercase mb-1 font-medium">
+   595→            What&apos;s Hot This Season
+   596→          </p>
+   597→          <h2 className="font-serif-display text-2xl font-bold">
+   598→            2026 <span className="text-gradient-festive">Trends</span>
+   599→          </h2>
+   600→        </div>
+   601→
+   602→        <div className="space-y-3">
+   603→          {TRENDS.map((trend, i) => (
+   604→            <motion.div
+   605→              key={i}
+   606→              initial={{ opacity: 0, x: -20 }}
+   607→              whileInView={{ opacity: 1, x: 0 }}
+   608→              viewport={{ once: true }}
+   609→              transition={{ delay: i * 0.08 }}
+   610→              className="bg-card-glass-light rounded-xl p-4 flex gap-4 items-start"
+   611→            >
+   612→              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#d4a017]/20 to-[#e8632b]/20 flex items-center justify-center flex-shrink-0 text-[var(--primary)]">
+   613→                {trend.icon}
+   614→              </div>
+   615→              <div className="min-w-0">
+   616→                <h3 className="font-serif-display text-sm font-semibold text-[var(--foreground)] mb-0.5">
+   617→                  {trend.title}
+   618→                </h3>
+   619→                <p className="text-[var(--muted-foreground)] text-xs leading-relaxed">
+   620→                  {trend.desc}
+   621→                </p>
+   622→              </div>
+   623→            </motion.div>
+   624→          ))}
+   625→        </div>
+   626→      </Section>
+   627→
+   628→      {/* ═══ FESTIVAL VIBES ═══ */}
+   629→      <Section>
+   630→        <div className="mb-5">
+   631→          <p className="text-[var(--accent)] text-xs tracking-[0.25em] uppercase mb-1 font-medium">
+   632→            Feel the Rhythm
+   633→          </p>
+   634→          <h2 className="font-serif-display text-2xl font-bold">
+   635→            Navratri <span className="text-gradient-gold">Vibes</span>
+   636→          </h2>
+   637→        </div>
+   638→
+   639→        <HorizontalScroll>
+   640→          {[
+   641→            {
+   642→              src: "https://sfile.chatglm.cn/images-ppt/b231344d43ec.jpg",
+   643→              title: "Garba Night Magic",
+   644→              desc: "Traditional dance celebration",
+   645→            },
+   646→            {
+   647→              src: "https://sfile.chatglm.cn/images-ppt/83b6435467b3.jpg",
+   648→              title: "Festive Elegance",
+   649→              desc: "Traditional lehenga in festive decor",
+   650→            },
+   651→            {
+   652→              src: "https://sfile.chatglm.cn/images-ppt/a0ef83710e42.jpg",
+   653→              title: "Ethnic Charm",
+   654→              desc: "Black outfit with colorful embroidery",
+   655→            },
+   656→            {
+   657→              src: "https://sfile.chatglm.cn/images-ppt/e1110d9d6ec7.jpg",
+   658→              title: "Pink Dream",
+   659→              desc: "Colorful lehenga with pink dupatta",
+   660→            },
+   661→          ].map((item, i) => (
+   662→            <motion.div
+   663→              key={i}
+   664→              initial={{ opacity: 0, x: 30 }}
+   665→              whileInView={{ opacity: 1, x: 0 }}
+   666→              viewport={{ once: true }}
+   667→              transition={{ delay: i * 0.1 }}
+   668→              className="flex-shrink-0 w-[260px] scroll-snap-start"
+   669→            >
+   670→              <button
+   671→                onClick={() => setModal({ src: item.src, title: item.title })}
+   672→                className="w-full text-left group"
+   673→              >
+   674→                <div className="relative aspect-[16/10] rounded-2xl overflow-hidden bg-card-glass">
+   675→                  <img
+   676→                    src={item.src}
+   677→                    alt={item.title}
+   678→                    className="w-full h-full object-cover transition-transform duration-500 group-active:scale-105"
+   679→                    loading="lazy"
+   680→                  />
+   681→                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+   682→                  <div className="absolute bottom-3 left-3">
+   683→                    <h3 className="font-serif-display text-sm font-semibold text-white">
+   684→                      {item.title}
+   685→                    </h3>
+   686→                    <p className="text-white/60 text-[10px] mt-0.5">{item.desc}</p>
+   687→                  </div>
+   688→                </div>
+   689→              </button>
+   690→            </motion.div>
+   691→          ))}
+   692→        </HorizontalScroll>
+   693→      </Section>
+   694→
+   695→      {/* ═══ CUSTOM ORDER CTA ═══ */}
+   696→      <Section>
+   697→        <div className="relative overflow-hidden rounded-2xl">
+   698→          {/* Background */}
+   699→          <div className="absolute inset-0 bg-gradient-to-br from-[#8B1A1A] via-[#5a1010] to-[#1a0505]" />
+   700→          <div className="absolute inset-0 opacity-10">
+   701→            <div className="absolute top-4 right-8 w-24 h-24 rounded-full border border-[#d4a017]/40" />
+   702→            <div className="absolute bottom-6 left-6 w-32 h-32 rounded-full border border-[#d4a017]/20" />
+   703→            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 rounded-full border border-[#d4a017]/15" />
+   704→          </div>
+   705→
+   706→          <div className="relative z-10 p-6 text-center">
+   707→            <motion.div
+   708→              animate={{ rotate: [0, 10, -10, 0] }}
+   709→              transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
+   710→              className="inline-block mb-4"
+   711→            >
+   712→              <Heart className="w-8 h-8 text-[var(--primary)] fill-[var(--primary)]" />
+   713→            </motion.div>
+   714→
+   715→            <h2 className="font-serif-display text-2xl font-bold mb-2">
+   716→              Your Dream Chaniya, <span className="text-gradient-gold">Made to Order</span>
+   717→            </h2>
+   718→            <p className="text-white/70 text-sm leading-relaxed mb-5 max-w-xs mx-auto">
+   719→              Tell me your vision — I&apos;ll bring it to life. Custom sizing, 
+   720→              handpicked fabrics, and embroidery that tells your story.
+   721→            </p>
+   722→
+   723→            <div className="flex flex-col gap-3">
+   724→              <a
+   725→                href="https://wa.me/919876543210?text=Hi%20Bhoomi!%20I%20want%20to%20order%20custom%20chaniya%20choli%20for%20Navratri"
+   726→                target="_blank"
+   727→                rel="noopener noreferrer"
+   728→                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-[#d4a017] to-[#e8a820] text-[#0a0505] rounded-full text-sm font-bold active:scale-95 transition-transform shadow-lg shadow-[#d4a017]/30"
+   729→              >
+   730→                <MessageCircle className="w-4.5 h-4.5" />
+   731→                WhatsApp to Order
+   732→                <Send className="w-3.5 h-3.5" />
+   733→              </a>
+   734→              <a
+   735→                href="tel:+919876543210"
+   736→                className="inline-flex items-center justify-center gap-2 px-6 py-3 border border-white/20 text-white rounded-full text-sm font-medium active:scale-95 transition-transform backdrop-blur-sm"
+   737→              >
+   738→                <Phone className="w-4 h-4" />
+   739→                Call to Discuss
+   740→              </a>
+   741→            </div>
+   742→
+   743→            <div className="mt-5 pt-4 border-t border-white/10">
+   744→              <p className="text-white/40 text-[10px] tracking-wider uppercase">
+   745→                Delivery across India &bull; Rush orders available
+   746→              </p>
+   747→            </div>
+   748→          </div>
+   749→        </div>
+   750→      </Section>
+   751→
+   752→      {/* ═══ WHY CHOOSE US ═══ */}
+   753→      <Section>
+   754→        <div className="mb-5">
+   755→          <p className="text-[var(--accent)] text-xs tracking-[0.25em] uppercase mb-1 font-medium">
+   756→            The Spiffy Promise
+   757→          </p>
+   758→          <h2 className="font-serif-display text-2xl font-bold">
+   759→            Why <span className="text-gradient-gold">Spiffy</span>?
+   760→          </h2>
+   761→        </div>
+   762→
+   763→        <div className="grid grid-cols-2 gap-3">
+   764→          {[
+   765→            { emoji: "🪡", title: "Handcrafted", desc: "Every stitch tells a story of tradition & love" },
+   766→            { emoji: "📐", title: "Perfect Fit", desc: "Custom tailoring for every body type & size" },
+   767→            { emoji: "💎", title: "Premium Quality", desc: "Finest fabrics, kundan, mirrors & embellishments" },
+   768→            { emoji: "🎨", title: "Your Design", desc: "Bring your Pinterest board — we make it real" },
+   769→            { emoji: "📦", title: "Pan-India Delivery", desc: "Safe packaging & delivery to your doorstep" },
+   770→            { emoji: "⚡", title: "Rush Orders", desc: "Need it fast? We've got you covered" },
+   771→          ].map((item, i) => (
+   772→            <motion.div
+   773→              key={i}
+   774→              initial={{ opacity: 0, y: 20 }}
+   775→              whileInView={{ opacity: 1, y: 0 }}
+   776→              viewport={{ once: true }}
+   777→              transition={{ delay: i * 0.08 }}
+   778→              className="bg-card-glass-light rounded-xl p-4"
+   779→            >
+   780→              <span className="text-2xl mb-2 block">{item.emoji}</span>
+   781→              <h3 className="font-serif-display text-sm font-semibold text-[var(--foreground)] mb-1">
+   782→                {item.title}
+   783→              </h3>
+   784→              <p className="text-[var(--muted-foreground)] text-[11px] leading-relaxed">
+   785→                {item.desc}
+   786→              </p>
+   787→            </motion.div>
+   788→          ))}
+   789→        </div>
+   790→      </Section>
+   791→
+   792→      {/* ═══ INSTAGRAM FEED CTA ═══ */}
+   793→      <Section>
+   794→        <div className="bg-card-glass rounded-2xl p-5 glow-gold text-center">
+   795→          <Instagram className="w-8 h-8 text-[var(--primary)] mx-auto mb-3" />
+   796→          <h2 className="font-serif-display text-xl font-bold mb-2">
+   797→            Follow on Instagram
+   798→          </h2>
+   799→          <p className="text-[var(--muted-foreground)] text-sm mb-4 max-w-xs mx-auto">
+   800→            Daily inspiration, behind-the-scenes, new designs & customer showcases. 
+   801→            Join the Spiffy family!
+   802→          </p>
+   803→          <a
+   804→            href="https://www.instagram.com/spiffy_clothing_and_jewellery"
+   805→            target="_blank"
+   806→            rel="noopener noreferrer"
+   807→            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#833AB4] via-[#E1306C] to-[#F77737] text-white rounded-full text-sm font-semibold active:scale-95 transition-transform shadow-lg"
+   808→          >
+   809→            <Instagram className="w-4 h-4" />
+   810→            @spiffy_clothing_and_jewellery
+   811→            <ExternalLink className="w-3 h-3" />
+   812→          </a>
+   813→        </div>
+   814→      </Section>
+   815→
+   816→      {/* ═══ FOOTER ═══ */}
+   817→      <footer className="px-5 pb-10 pt-6 mt-4 border-t border-[var(--border)]">
+   818→        <div className="text-center">
+   819→          <div className="inline-flex items-center gap-1.5 mb-3">
+   820→            <Sparkles className="w-4 h-4 text-[var(--primary)]" />
+   821→            <span className="font-serif-display text-lg font-bold text-gradient-gold">
+   822→              Spiffy
+   823→            </span>
+   824→          </div>
+   825→          <p className="text-[var(--muted-foreground)] text-xs mb-4">
+   826→            Custom Chaniya Choli & Jewellery by Bhoomi Panchal
+   827→          </p>
+   828→
+   829→          <div className="flex justify-center gap-4 mb-4">
+   830→            <a
+   831→              href="https://wa.me/919876543210"
+   832→              target="_blank"
+   833→              rel="noopener noreferrer"
+   834→              className="w-10 h-10 rounded-full bg-card-glass flex items-center justify-center text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors active:scale-90"
+   835→              aria-label="WhatsApp"
+   836→            >
+   837→              <MessageCircle className="w-4.5 h-4.5" />
+   838→            </a>
+   839→            <a
+   840→              href="https://www.instagram.com/spiffy_clothing_and_jewellery"
+   841→              target="_blank"
+   842→              rel="noopener noreferrer"
+   843→              className="w-10 h-10 rounded-full bg-card-glass flex items-center justify-center text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors active:scale-90"
+   844→              aria-label="Instagram"
+   845→            >
+   846→              <Instagram className="w-4.5 h-4.5" />
+   847→            </a>
+   848→            <a
+   849→              href="tel:+919876543210"
+   850→              className="w-10 h-10 rounded-full bg-card-glass flex items-center justify-center text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors active:scale-90"
+   851→              aria-label="Phone"
+   852→            >
+   853→              <Phone className="w-4.5 h-4.5" />
+   854→            </a>
+   855→          </div>
+   856→
+   857→          <p className="text-[var(--muted-foreground)] text-[10px] opacity-50">
+   858→            Made with love for Navratri 2026
+   859→          </p>
+   860→        </div>
+   861→      </footer>
+   862→
+   863→      {/* ═══ IMAGE MODAL ═══ */}
+   864→      <ImageModal
+   865→        src={modal?.src || ""}
+   866→        title={modal?.title || ""}
+   867→        open={!!modal}
+   868→        onClose={() => setModal(null)}
+   869→      />
+   870→
+   871→      {/* ═══ FLOATING WHATSAPP BUTTON ═══ */}
+   872→      <motion.a
+   873→        href="https://wa.me/919876543210?text=Hi%20Bhoomi!%20I%20saw%20your%20website%20and%20want%20to%20know%20more%20about%20custom%20chaniya%20choli"
+   874→        target="_blank"
+   875→        rel="noopener noreferrer"
+   876→        initial={{ scale: 0, opacity: 0 }}
+   877→        animate={{ scale: 1, opacity: 1 }}
+   878→        transition={{ delay: 1.5, type: "spring", stiffness: 200 }}
+   879→        className="fixed bottom-6 right-4 z-40 w-14 h-14 bg-[#25D366] rounded-full flex items-center justify-center shadow-lg shadow-[#25D366]/30 active:scale-90 transition-transform"
+   880→        aria-label="Chat on WhatsApp"
+   881→      >
+   882→        <MessageCircle className="w-6 h-6 text-white fill-white" />
+   883→      </motion.a>
+   884→    </main>
+   885→  );
+   886→}
