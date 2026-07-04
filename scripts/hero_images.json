@@ -1,0 +1,29 @@
+{
+  "success": true,
+  "query": "elegant colorful navratri festival background with marigold flowers and traditional patterns",
+  "count": 3,
+  "ranked": true,
+  "results": [
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/6785540e08a5.webp",
+      "caption": "A festive home altar decorated with marigold garlands, lights, and a statue of Lord Ganesha. suitable for background image",
+      "source": "LoveNspire",
+      "original_width": "900px",
+      "original_height": "900px"
+    },
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/6fe4652a12a8.png",
+      "caption": "Glowing diya lamps arranged with orange marigold flowers on a dark background. suitable for background image",
+      "source": "HomeLane",
+      "original_width": "2048px",
+      "original_height": "1365px"
+    },
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/db96fc8ea34c.jpg",
+      "caption": "The image contains watermarks and text: dreamstime.com, ID 443311311 © Nitin Yadav.",
+      "source": "Dreamstime.com",
+      "original_width": "1066px",
+      "original_height": "1690px"
+    }
+  ]
+}

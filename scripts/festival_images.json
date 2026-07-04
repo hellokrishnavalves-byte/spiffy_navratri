@@ -1,0 +1,36 @@
+{
+  "success": true,
+  "query": "navratri garba night colorful festival celebration with women dancing",
+  "count": 4,
+  "ranked": true,
+  "results": [
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/b231344d43ec.jpg",
+      "caption": "A vibrant illustration of a man and woman in traditional Indian attire dancing with sticks, surrounded by colorful floral patterns. suitable for background image",
+      "source": "The Times of India",
+      "original_width": "1200px",
+      "original_height": "900px"
+    },
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/85c4d65d33cc.jpg",
+      "caption": "The image contains watermarks and text. Text: alamy, Image ID: R85NWN, www.alamy.com.",
+      "source": "Alamy",
+      "original_width": "1300px",
+      "original_height": "956px"
+    },
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/ce6b70135245.jpg",
+      "caption": "A man in colorful traditional attire and a mask smiles at a festive event with blurred background lights. suitable for background image",
+      "source": "Diwas by Manyavar",
+      "original_width": "2500px",
+      "original_height": "1007px"
+    },
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/5184c4d8d305.jpg",
+      "caption": "The image contains watermarks and text. Text: alamy, Image ID: H34DA5, www.alamy.com.",
+      "source": "Alamy",
+      "original_width": "1300px",
+      "original_height": "1042px"
+    }
+  ]
+}

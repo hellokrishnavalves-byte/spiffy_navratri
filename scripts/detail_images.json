@@ -1,0 +1,36 @@
+{
+  "success": true,
+  "query": "close up embroidered chaniya choli fabric bandhani mirror work traditional Gujarati",
+  "count": 4,
+  "ranked": true,
+  "results": [
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/83b6435467b3.jpg",
+      "caption": "A woman in a colorful traditional Indian lehenga stands in a festively decorated room. suitable for background image",
+      "source": "Anant Exports",
+      "original_width": "1500px",
+      "original_height": "1961px"
+    },
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/61a4b876cbc3.png",
+      "caption": "A woman in a vibrant traditional Indian lehenga with intricate embroidery, set against a festive background. suitable for background image",
+      "source": "tapee.in",
+      "original_width": "800px",
+      "original_height": "1100px"
+    },
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/a0ef83710e42.jpg",
+      "caption": "A woman in a black traditional outfit with colorful embroidery stands in front of a thatched hut. suitable for background image",
+      "source": "Anant Exports",
+      "original_width": "1500px",
+      "original_height": "2250px"
+    },
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/e1110d9d6ec7.jpg",
+      "caption": "A woman in a colorful traditional Indian lehenga with a pink dupatta, suitable for background image.",
+      "source": "Mirraw.com",
+      "original_width": "759px",
+      "original_height": "1100px"
+    }
+  ]
+}

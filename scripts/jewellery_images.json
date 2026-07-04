@@ -1,0 +1,50 @@
+{
+  "success": true,
+  "query": "traditional Indian navratri jewellery set kundan necklace earrings maang tikka",
+  "count": 6,
+  "ranked": true,
+  "results": [
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/8cb73d7a1f7b.jpg",
+      "caption": "A traditional gold jewelry set with red and white gemstones, including a necklace, earrings, and a maang tikka. suitable for background image",
+      "source": "Amazon.in",
+      "original_width": "1010px",
+      "original_height": "1100px"
+    },
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/e524710e5df1.jpeg",
+      "caption": "An elegant jewelry set featuring a choker necklace, earrings, and a maang tikka with pearls and crystals. suitable for background image",
+      "source": "Mirraw.com",
+      "original_width": "800px",
+      "original_height": "1008px"
+    },
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/e8f41674c678.jpg",
+      "caption": "A woman wearing an elaborate gold, pearl, and white stone necklace set with a maang tikka. suitable for background image",
+      "source": "Amazon.in",
+      "original_width": "1100px",
+      "original_height": "1100px"
+    },
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/0b320701fcdc.jpg",
+      "caption": "An ornate silver-toned jewelry set with turquoise and pink beads, including a necklace, earrings, and maang tikka. suitable for background image",
+      "source": "Eternz",
+      "original_width": "768px",
+      "original_height": "1024px"
+    },
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/7429c00ec318.png",
+      "caption": "A woman in a white embroidered outfit and heavy gold jewelry poses for the camera.",
+      "source": "Dista",
+      "original_width": "1404px",
+      "original_height": "1500px"
+    },
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/86d4a8102946.jpeg",
+      "caption": "A hand holds an ornate gold jewelry piece with clear gemstones and white enamel details.",
+      "source": "Mirraw.com",
+      "original_width": "800px",
+      "original_height": "1067px"
+    }
+  ]
+}
