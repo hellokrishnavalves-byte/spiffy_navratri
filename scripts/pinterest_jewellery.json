@@ -1,0 +1,50 @@
+{
+  "success": true,
+  "query": "Indian navratri jewellery set kundan necklace earrings traditional festive",
+  "count": 6,
+  "ranked": true,
+  "results": [
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/85bf6c9f384b.jpg",
+      "caption": "A pair of gold earrings with red and green teardrop gemstones surrounded by white pearls. suitable for background image",
+      "source": "JewelEMarket",
+      "original_width": "3000px",
+      "original_height": "3000px"
+    },
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/16d7581478f1.jpg",
+      "caption": "A set of turquoise and gold jewelry including a necklace, earrings, and a maang tikka. suitable for background image",
+      "source": "Amazon.in",
+      "original_width": "880px",
+      "original_height": "1100px"
+    },
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/3ced7c949965.jpg",
+      "caption": "The image displays a gold, green, and pink jewelry set with a watermark: www.blingbag.co.in. suitable for background image",
+      "source": "Bling Bag",
+      "original_width": "1080px",
+      "original_height": "1080px"
+    },
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/778ab3adb61b.jpg",
+      "caption": "A woman in a black top wears a multi-layered necklace of green beads, pearls, and diamonds. suitable for background image",
+      "source": "Amazon.in",
+      "original_width": "1005px",
+      "original_height": "1100px"
+    },
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/6db5ba668e19.jpg",
+      "caption": "Intricate gold jhumka earrings with white stones, pearls, and maroon beads on a green background. suitable for background image",
+      "source": "Eternz",
+      "original_width": "1024px",
+      "original_height": "1024px"
+    },
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/603a4fc12596.jpg",
+      "caption": "A woman in an ornate black and gold embroidered outfit with traditional jewelry, suitable for background image.",
+      "source": "Amazon.in",
+      "original_width": "880px",
+      "original_height": "1100px"
+    }
+  ]
+}

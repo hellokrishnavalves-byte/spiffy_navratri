@@ -16,30 +16,22 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Spiffy by Bhoomi Panchal | Custom Navratri Chaniya Choli & Jewellery",
+  title: "Spiffy Clothing & Jewellery | Custom Navratri Chaniya Choli",
   description:
-    "Designer custom Navratri chaniya choli & jewellery. Any size, any design, any color. Handcrafted by Bhoomi Panchal. Order your perfect Garba look today!",
+    "Custom designer Navratri chaniya choli & jewellery. Any size, any design, any color. By Bhoomi Panchal, Ahmedabad.",
   keywords: [
     "Navratri",
     "chaniya choli",
     "garba outfit",
     "custom chaniya",
     "Navratri jewellery",
-    "kundan jewellery",
     "Bhoomi Panchal",
     "Spiffy Clothing",
-    "garba dress",
     "Navratri 2026",
   ],
   authors: [{ name: "Bhoomi Panchal" }],
   icons: {
     icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>",
-  },
-  openGraph: {
-    title: "Spiffy by Bhoomi Panchal | Custom Navratri Chaniya Choli & Jewellery",
-    description:
-      "Designer custom Navratri chaniya choli & jewellery. Any size, any design, any color.",
-    type: "website",
   },
 };
 
@@ -48,7 +40,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#FFF9F0",
+  themeColor: "#FAFAFA",
 };
 
 export default function RootLayout({
@@ -61,9 +53,9 @@ export default function RootLayout({
       <body
         className={`${playfair.variable} ${poppins.variable} antialiased`}
         style={{
-          fontFamily: "var(--font-poppins), sans-serif",
-          background: "#FFF9F0",
-          color: "#3D1A0A",
+          fontFamily: "var(--font-poppins), -apple-system, BlinkMacSystemFont, sans-serif",
+          background: "#FAFAFA",
+          color: "#262626",
         }}
       >
         {children}

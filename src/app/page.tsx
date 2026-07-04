@@ -1,217 +1,113 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  Sparkles,
-  Star,
+  HomeIcon,
+  Search,
   Heart,
+  PlusSquare,
+  Film,
   Instagram,
   Phone,
   MessageCircle,
-  ChevronRight,
-  ChevronLeft,
-  Palette,
-  Ruler,
-  Scissors,
-  Gem,
-  Flame,
-  ArrowDown,
   X,
-  ExternalLink,
   Send,
+  ChevronLeft,
+  ChevronRight,
+  MapPin,
   Truck,
   Globe,
-  MapPin,
+  Star,
+  Gem,
+  Sparkles,
+  Flame,
+  Scissors,
+  Palette,
+  Ruler,
+  Bookmark,
+  Share2,
+  Grid3X3,
 } from "lucide-react";
 
 const PHONE = "918160159403";
 const WA_BASE = `https://wa.me/${PHONE}`;
 const IG_URL = "https://www.instagram.com/spiffy_clothing_and_jewellery";
 
-/* ─── Image Data ─── */
-const CHANIYA_IMAGES = [
+/* ─── PINTEREST-STYLE MASONRY DATA ─── */
+const PINS: { src: string; title: string; height: string; likes: number }[] = [
+  { src: "https://sfile.chatglm.cn/images-ppt/c124a55fa892.jpg", title: "Ornate Heritage Lehenga", height: "h-72", likes: 342 },
+  { src: "https://sfile.chatglm.cn/images-ppt/9884bd5243b9.png", title: "Tiered Mirror Work", height: "h-56", likes: 218 },
+  { src: "https://sfile.chatglm.cn/images-ppt/60a5ce0fae2e.jpg", title: "Royal Bandhani Set", height: "h-64", likes: 456 },
+  { src: "https://sfile.chatglm.cn/images-ppt/4e216ba5524c.png", title: "Colorful Traditional", height: "h-80", likes: 189 },
+  { src: "https://sfile.chatglm.cn/images-ppt/a4176f3608e7.jpeg", title: "Embroidered Elegance", height: "h-56", likes: 521 },
+  { src: "https://sfile.chatglm.cn/images-ppt/340c03ecfbd5.jpg", title: "Yellow Festive Look", height: "h-72", likes: 307 },
+  { src: "https://sfile.chatglm.cn/images-ppt/ebf7a28f119c.jpg", title: "Rich Silk Chaniya", height: "h-64", likes: 274 },
+  { src: "https://sfile.chatglm.cn/images-ppt/ad05fdfa4191.jpg", title: "Teal Embroidered", height: "h-56", likes: 395 },
+  { src: "https://sfile.chatglm.cn/images-ppt/027c185047a3.jpg", title: "Festive Grandeur", height: "h-80", likes: 612 },
+  { src: "https://sfile.chatglm.cn/images-ppt/cb15ba3ae2b8.png", title: "Pink Blue Dupatta", height: "h-56", likes: 168 },
+  { src: "https://sfile.chatglm.cn/images-ppt/5c3721b0e2c5.jpg", title: "Garba Dancer", height: "h-64", likes: 489 },
+  { src: "https://sfile.chatglm.cn/images-ppt/a78be4f5bedb.jpg", title: "Green Red Combo", height: "h-72", likes: 231 },
+  { src: "https://sfile.chatglm.cn/images-ppt/5cf850d3dd40.jpg", title: "Ornate Room Pose", height: "h-56", likes: 347 },
+  { src: "https://sfile.chatglm.cn/images-ppt/8cb73d7a1f7b.jpg", title: "Kundan Royal Set", height: "h-64", likes: 413 },
+  { src: "https://sfile.chatglm.cn/images-ppt/e524710e5df1.jpeg", title: "Pearl Choker Set", height: "h-56", likes: 285 },
+  { src: "https://sfile.chatglm.cn/images-ppt/85bf6c9f384b.jpg", title: "Gemstone Jhumkas", height: "h-72", likes: 198 },
+  { src: "https://sfile.chatglm.cn/images-ppt/16d7581478f1.jpg", title: "Turquoise Necklace", height: "h-56", likes: 367 },
+  { src: "https://sfile.chatglm.cn/images-ppt/e8f41674c678.jpg", title: "Temple Gold Set", height: "h-64", likes: 534 },
+];
+
+/* ─── REELS DATA ─── */
+const REELS: { src: string; title: string; desc: string }[] = [
   {
-    src: "https://sfile.chatglm.cn/images-ppt/60a5ce0fae2e.jpg",
-    title: "Royal Bandhani",
-    desc: "Vibrant patterned traditional outfit",
+    src: "https://sfile.chatglm.cn/images-ppt/efc074bc5101.jpg",
+    title: "Navratri Night Vibes",
+    desc: "Dance the night away in our handcrafted chaniya choli ✨",
   },
   {
-    src: "https://sfile.chatglm.cn/images-ppt/10cde675d093.png",
-    title: "Garba Queen",
-    desc: "Embroidered dress with garba sticks",
+    src: "https://sfile.chatglm.cn/images-ppt/b231344d43ec.jpg",
+    title: "Garba Queen Look",
+    desc: "Traditional meets modern — scroll to explore the collection",
   },
   {
-    src: "https://sfile.chatglm.cn/images-ppt/b5886ad09b0a.jpeg",
-    title: "Tiered Elegance",
-    desc: "Colorful tiered skirt with embroidered jacket",
-  },
-  {
-    src: "https://sfile.chatglm.cn/images-ppt/c124a55fa892.jpg",
-    title: "Ornate Heritage",
-    desc: "Rich traditional outfit in ornate setting",
+    src: "https://sfile.chatglm.cn/images-ppt/83b6435467b3.jpg",
+    title: "Custom Embroidery",
+    desc: "Every piece tells a story. DM us to create yours!",
   },
   {
     src: "https://sfile.chatglm.cn/images-ppt/0bfa986a39f7.webp",
-    title: "Rajasthani Dream",
-    desc: "Vibrant outfit against scenic backdrop",
-  },
-  {
-    src: "https://sfile.chatglm.cn/images-ppt/6c80b6982f1c.jpg",
-    title: "Garden Princess",
-    desc: "Red lehenga with patterned dupatta",
-  },
-  {
-    src: "https://sfile.chatglm.cn/images-ppt/d4e2d0620af1.jpg",
-    title: "Mirror Glow",
-    desc: "Green & yellow lehenga with mirror work",
-  },
-  {
-    src: "https://sfile.chatglm.cn/images-ppt/61a4b876cbc3.png",
-    title: "Festive Glam",
-    desc: "Intricate embroidery on vibrant fabric",
-  },
-];
-
-const JEWELLERY_IMAGES = [
-  {
-    src: "https://sfile.chatglm.cn/images-ppt/8cb73d7a1f7b.jpg",
-    title: "Kundan Royal Set",
-    desc: "Gold with red & white gemstones",
-  },
-  {
-    src: "https://sfile.chatglm.cn/images-ppt/e524710e5df1.jpeg",
-    title: "Pearl Choker Set",
-    desc: "Crystal & pearl choker with tikka",
-  },
-  {
-    src: "https://sfile.chatglm.cn/images-ppt/e8f41674c678.jpg",
-    title: "Temple Gold Set",
-    desc: "Gold, pearl & white stone necklace",
-  },
-  {
-    src: "https://sfile.chatglm.cn/images-ppt/0b320701fcdc.jpg",
-    title: "Boho Silver Set",
-    desc: "Turquoise & pink bead jewellery",
-  },
-  {
-    src: "https://sfile.chatglm.cn/images-ppt/86d4a8102946.jpeg",
-    title: "Heritage Kundan",
-    desc: "Gold with clear gemstones & enamel",
-  },
-  {
-    src: "https://sfile.chatglm.cn/images-ppt/7429c00ec318.png",
-    title: "Bridal Gold Set",
-    desc: "Heavy gold jewellery with white outfit",
+    title: "Mirror Work Magic",
+    desc: "Abla mirror work that sparkles under the garba lights",
   },
 ];
 
 const NINE_COLORS = [
-  { day: 1, name: "Day 1", color: "Yellow", hex: "#FFD700", goddess: "Shailputri", desc: "Bright & auspicious" },
-  { day: 2, name: "Day 2", color: "Green", hex: "#228B22", goddess: "Brahmacharini", desc: "Nature & growth" },
-  { day: 3, name: "Day 3", color: "Grey", hex: "#808080", goddess: "Chandraghanta", desc: "Balance & calm" },
-  { day: 4, name: "Day 4", color: "Orange", hex: "#FF6B35", goddess: "Kushmanda", desc: "Energy & warmth" },
-  { day: 5, name: "Day 5", color: "White", hex: "#F5F5F0", goddess: "Skandamata", desc: "Purity & peace" },
-  { day: 6, name: "Day 6", color: "Red", hex: "#DC143C", goddess: "Katyayani", desc: "Power & passion" },
-  { day: 7, name: "Day 7", color: "Royal Blue", hex: "#1E3A8A", goddess: "Kaalratri", desc: "Strength & depth" },
-  { day: 8, name: "Day 8", color: "Pink", hex: "#FF69B4", goddess: "Mahagauri", desc: "Grace & beauty" },
-  { day: 9, name: "Day 9", color: "Purple", hex: "#7B2D8E", goddess: "Siddhidatri", desc: "Royalty & devotion" },
+  { day: 1, color: "Yellow", hex: "#FFD700", goddess: "Shailputri" },
+  { day: 2, color: "Green", hex: "#228B22", goddess: "Brahmacharini" },
+  { day: 3, color: "Grey", hex: "#A9A9A9", goddess: "Chandraghanta" },
+  { day: 4, color: "Orange", hex: "#FF6B35", goddess: "Kushmanda" },
+  { day: 5, color: "White", hex: "#F0F0F0", goddess: "Skandamata" },
+  { day: 6, color: "Red", hex: "#DC143C", goddess: "Katyayani" },
+  { day: 7, color: "Royal Blue", hex: "#1E3A8A", goddess: "Kaalratri" },
+  { day: 8, color: "Pink", hex: "#FF69B4", goddess: "Mahagauri" },
+  { day: 9, color: "Purple", hex: "#7B2D8E", goddess: "Siddhidatri" },
 ];
 
 const TRENDS = [
-  { icon: <Sparkles className="w-5 h-5" />, title: "Bandhani Revival", desc: "Traditional tie-dye patterns in bold new color combos are the rage this season." },
-  { icon: <Scissors className="w-5 h-5" />, title: "Cape Blouses", desc: "One-shoulder cuts, cape overlays & cold-shoulder styles redefine the choli." },
-  { icon: <Palette className="w-5 h-5" />, title: "Pastel Power", desc: "Soft pastels meet mirror work for a dreamy, modern Garba look." },
-  { icon: <Gem className="w-5 h-5" />, title: "Kundan Layers", desc: "Layered kundan necklaces & temple jewellery dominate 2026 festive styling." },
-  { icon: <Ruler className="w-5 h-5" />, title: "Chinon Fabric", desc: "Lightweight Chinon with heavy embroidery — comfort meets grandeur." },
-  { icon: <Flame className="w-5 h-5" />, title: "Mirror Magic", desc: "Abla mirror work & Gotapatti create dazzling dance-ready outfits." },
+  { icon: <Sparkles className="w-4 h-4" />, title: "Bandhani Revival", desc: "Bold tie-dye in new color combos" },
+  { icon: <Scissors className="w-4 h-4" />, title: "Cape Blouses", desc: "One-shoulder & cold-shoulder cuts" },
+  { icon: <Palette className="w-4 h-4" />, title: "Pastel Power", desc: "Soft pastels with mirror work" },
+  { icon: <Gem className="w-4 h-4" />, title: "Kundan Layers", desc: "Layered temple jewellery sets" },
+  { icon: <Ruler className="w-4 h-4" />, title: "Chinon Fabric", desc: "Lightweight with heavy embroidery" },
+  { icon: <Flame className="w-4 h-4" />, title: "Mirror Magic", desc: "Abla & Gotapatti dazzle" },
 ];
 
-/* ─── Reusable: Section wrapper ─── */
-function Section({
-  children,
-  className = "",
-  id,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  id?: string;
-}) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-60px" });
+/* ─── TAB TYPES ─── */
+type Tab = "home" | "search" | "reels" | "orders" | "profile";
 
-  return (
-    <motion.section
-      id={id}
-      ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, ease: "easeOut" }}
-      className={`px-5 py-6 ${className}`}
-    >
-      {children}
-    </motion.section>
-  );
-}
-
-/* ─── Horizontal scroll with arrow buttons ─── */
-function HorizontalScroll({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  const scroll = (dir: "left" | "right") => {
-    if (!scrollRef.current) return;
-    const amount = scrollRef.current.clientWidth * 0.75;
-    scrollRef.current.scrollBy({
-      left: dir === "left" ? -amount : amount,
-      behavior: "smooth",
-    });
-  };
-
-  return (
-    <div className="relative group">
-      <button
-        onClick={() => scroll("left")}
-        className="absolute left-1 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white/80 border border-[var(--border)] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm active:scale-90"
-        aria-label="Scroll left"
-      >
-        <ChevronLeft className="w-4 h-4 text-[var(--primary)]" />
-      </button>
-      <div
-        ref={scrollRef}
-        className={`flex gap-3 overflow-x-auto no-scrollbar scroll-snap-x pb-2 ${className}`}
-      >
-        {children}
-      </div>
-      <button
-        onClick={() => scroll("right")}
-        className="absolute right-1 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white/80 border border-[var(--border)] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm active:scale-90"
-        aria-label="Scroll right"
-      >
-        <ChevronRight className="w-4 h-4 text-[var(--primary)]" />
-      </button>
-    </div>
-  );
-}
-
-/* ─── Image Modal ─── */
-function ImageModal({
-  src,
-  title,
-  open,
-  onClose,
-}: {
-  src: string;
-  title: string;
-  open: boolean;
-  onClose: () => void;
-}) {
-  if (!open) return null;
+/* ═══════════════════════════════════════════════════════════════ */
+/*  IMAGE MODAL                                                  */
+/* ═══════════════════════════════════════════════════════════════ */
+function ImageModal({ src, title, open, onClose }: { src: string; title: string; open: boolean; onClose: () => void }) {
   return (
     <AnimatePresence>
       {open && (
@@ -222,28 +118,18 @@ function ImageModal({
           className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
           onClick={onClose}
         >
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 flex items-center justify-center z-10 backdrop-blur-sm"
-            aria-label="Close"
-          >
+          <button onClick={onClose} className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/20 flex items-center justify-center z-10" aria-label="Close">
             <X className="w-5 h-5 text-white" />
           </button>
           <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
+            initial={{ scale: 0.85, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: "spring", damping: 25 }}
-            className="max-w-[90vw] max-h-[85vh] relative"
+            className="max-w-[92vw] max-h-[85vh] relative"
             onClick={(e) => e.stopPropagation()}
           >
-            <img
-              src={src}
-              alt={title}
-              className="max-h-[80vh] w-auto rounded-2xl object-contain"
-            />
-            <p className="text-center mt-3 text-white font-serif-display text-lg font-semibold">
-              {title}
-            </p>
+            <img src={src} alt={title} className="max-h-[80vh] w-auto rounded-2xl object-contain" />
+            <p className="text-center mt-3 text-white font-medium text-sm">{title}</p>
           </motion.div>
         </motion.div>
       )}
@@ -251,682 +137,574 @@ function ImageModal({
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   MAIN PAGE
-   ═══════════════════════════════════════════════════════════════ */
-export default function Home() {
-  const [modal, setModal] = useState<{ src: string; title: string } | null>(null);
-  const [activeColorIdx, setActiveColorIdx] = useState(0);
-  const colorScrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!colorScrollRef.current) return;
-    const container = colorScrollRef.current;
-    const cardWidth = container.firstElementChild?.getBoundingClientRect().width || 120;
-    container.scrollTo({ left: activeColorIdx * (cardWidth + 12) - 20, behavior: "smooth" });
-  }, [activeColorIdx]);
-
+/* ═══════════════════════════════════════════════════════════════ */
+/*  TAB: HOME — Instagram-like feed                              */
+/* ═══════════════════════════════════════════════════════════════ */
+function HomeTab() {
   return (
-    <main className="min-h-screen font-sans-body relative overflow-x-hidden">
-      {/* ═══ Decorative background ═══ */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-0 left-0 w-full h-full" style={{ background: "linear-gradient(180deg, #FFF9F0 0%, #FFF3E0 30%, #FFF9F0 100%)" }} />
-        <div className="absolute top-20 right-0 w-72 h-72 bg-[#D4A017]/5 rounded-full blur-[100px]" />
-        <div className="absolute top-96 -left-20 w-60 h-60 bg-[#C0392B]/5 rounded-full blur-[80px]" />
-        <div className="absolute bottom-40 right-10 w-48 h-48 bg-[#E07B2A]/5 rounded-full blur-[80px]" />
-      </div>
-
-      {/* ═══ HERO SECTION ═══ */}
-      <section className="relative min-h-[100dvh] flex flex-col justify-end pb-8 px-5 pt-16 z-10">
-        {/* Hero background image */}
-        <div className="absolute inset-0 z-0">
-          <img
-            src="https://sfile.chatglm.cn/images-ppt/efc074bc5101.jpg"
-            alt="Navratri dancer in traditional outfit with marigold decorations"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#FFF9F0] via-[#FFF9F0]/40 to-[#FFF9F0]/10" />
-        </div>
-
-        <div className="relative z-10">
-          {/* Floating decorative element */}
-          <motion.div
-            animate={{ y: [0, -8, 0], rotate: [0, 5, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="mb-5"
-          >
-            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#B8860B] to-[#E07B2A] flex items-center justify-center shadow-lg">
-              <Sparkles className="w-7 h-7 text-white" />
-            </div>
-          </motion.div>
-
-          <motion.p
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-[var(--secondary)] text-xs tracking-[0.3em] uppercase mb-2 font-semibold"
-          >
-            Navratri & Festive Collections
-          </motion.p>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
-            className="font-serif-display text-5xl font-bold leading-[1.1] mb-1"
-          >
-            <span className="text-gradient-gold">Spiffy</span>
-          </motion.h1>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.8 }}
-            className="font-serif-display text-xl font-semibold text-[var(--foreground)] mb-1"
-          >
-            Clothing & Jewellery
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.7 }}
-            className="text-[var(--muted-foreground)] text-xs flex items-center gap-1.5 mb-4"
-          >
-            <MapPin className="w-3 h-3" />
-            Designer Wear &bull; Ahmedabad
-          </motion.p>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
-            className="text-[var(--muted-foreground)] text-sm leading-relaxed max-w-xs mb-3"
-          >
-            Custom designer chaniya choli & jewellery for the perfect Garba night.
-            Any size. Any design. Any color.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.85 }}
-            className="flex items-center gap-3 mb-6 text-[10px] text-[var(--muted-foreground)]"
-          >
-            <span className="flex items-center gap-1"><Truck className="w-3 h-3" /> Worldwide Shipping</span>
-            <span className="w-1 h-1 rounded-full bg-[var(--border)]" />
-            <span className="flex items-center gap-1"><Globe className="w-3 h-3" /> 7,226+ Followers</span>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.0 }}
-            className="flex gap-3"
-          >
-            <a
-              href={`${WA_BASE}?text=Hi%20Spiffy!%20I%20want%20to%20order%20custom%20chaniya%20choli`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#B8860B] to-[#D4A017] text-white rounded-full text-sm font-semibold active:scale-95 transition-transform shadow-lg shadow-[#B8860B]/20"
-            >
-              <MessageCircle className="w-4 h-4" />
-              Order on WhatsApp
-            </a>
-            <a
-              href={IG_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-3 border-2 border-[var(--primary)]/30 text-[var(--foreground)] rounded-full text-sm font-medium active:scale-95 transition-transform bg-white/50 backdrop-blur-sm"
-            >
-              <Instagram className="w-4 h-4" />
-              <span className="hidden sm:inline">Follow</span>
-            </a>
-          </motion.div>
-
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="mt-10 flex justify-center"
-          >
-            <ArrowDown className="w-5 h-5 text-[var(--muted-foreground)]/60" />
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ═══ 9 COLORS OF NAVRATRI ═══ */}
-      <Section id="colors">
-        <div className="mb-5">
-          <p className="text-[var(--accent)] text-xs tracking-[0.25em] uppercase mb-1 font-medium">
-            Navratri 2026 &bull; Oct 11 – 19
-          </p>
-          <h2 className="font-serif-display text-2xl font-bold">
-            9 Nights, 9 <span className="text-gradient-festive">Colors</span>
-          </h2>
-        </div>
-
-        {/* Color selector strip */}
-        <div ref={colorScrollRef} className="flex gap-3 overflow-x-auto no-scrollbar mb-4 pb-1">
-          {NINE_COLORS.map((c, i) => (
-            <button
-              key={c.day}
-              onClick={() => setActiveColorIdx(i)}
-              className={`flex-shrink-0 flex flex-col items-center gap-1.5 transition-all duration-300 ${
-                activeColorIdx === i ? "scale-110" : "opacity-50 hover:opacity-80"
-              }`}
-              aria-label={`Day ${c.day} - ${c.color}`}
-            >
-              <div
-                className={`w-10 h-10 rounded-full border-2 transition-all duration-300 shadow-sm ${
-                  activeColorIdx === i
-                    ? "border-[var(--primary)] shadow-md scale-110"
-                    : "border-[var(--border)]"
-                }`}
-                style={{ backgroundColor: c.hex }}
-              />
-              <span className="text-[10px] text-[var(--muted-foreground)] font-medium">
-                {c.day}
-              </span>
+    <div className="pb-safe">
+      {/* Stories row */}
+      <div className="bg-white border-b border-[#DBDBDB] px-4 py-3">
+        <div className="flex gap-3 overflow-x-auto no-scrollbar">
+          {[
+            { label: "9 Colors", emoji: "🎨", color: "from-[#F58529] to-[#DD2A7B]" },
+            { label: "Chaniya", emoji: "💃", color: "from-[#DD2A7B] to-[#8134AF]" },
+            { label: "Jewellery", emoji: "💎", color: "from-[#8134AF] to-[#515BD4]" },
+            { label: "Trends", emoji: "🔥", color: "from-[#F58529] to-[#FEDA75]" },
+            { label: "Custom", emoji: "✂️", color: "from-[#0095F6] to-[#00C6FF]" },
+          ].map((s) => (
+            <button key={s.label} className="flex flex-col items-center gap-1 flex-shrink-0">
+              <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${s.color} p-[2px]`}>
+                <div className="w-full h-full rounded-full bg-white p-[2px]">
+                  <div className="w-full h-full rounded-full bg-[#EFEFEF] flex items-center justify-center text-2xl">
+                    {s.emoji}
+                  </div>
+                </div>
+              </div>
+              <span className="text-[10px] text-[#262626] font-medium">{s.label}</span>
             </button>
           ))}
         </div>
+      </div>
 
-        {/* Active color detail card */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeColorIdx}
-            initial={{ opacity: 0, y: 15, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.97 }}
-            transition={{ duration: 0.35 }}
-            className="bg-card-glass rounded-2xl p-5 glow-gold"
-          >
-            <div className="flex items-start gap-4">
-              <div
-                className="w-16 h-16 rounded-2xl flex-shrink-0 flex items-center justify-center shadow-inner border border-white/50"
-                style={{ backgroundColor: NINE_COLORS[activeColorIdx].hex }}
-              >
-                <span className="text-[#3D1A0A] font-bold text-lg font-serif-display">
-                  {NINE_COLORS[activeColorIdx].day}
-                </span>
+      {/* Profile header card */}
+      <div className="bg-white border-b border-[#DBDBDB] p-4">
+        <div className="flex items-center gap-3">
+          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#F58529] to-[#DD2A7B] p-[2px]">
+            <div className="w-full h-full rounded-full bg-white p-[2px]">
+              <div className="w-full h-full rounded-full bg-[#EFEFEF] flex items-center justify-center">
+                <span className="text-lg font-serif-display font-bold text-gradient-ig">S</span>
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="font-serif-display text-xl font-bold text-[var(--foreground)]">
-                    {NINE_COLORS[activeColorIdx].color}
-                  </h3>
-                  <span className="text-[var(--muted-foreground)] text-xs">
-                    &bull; {NINE_COLORS[activeColorIdx].name}
-                  </span>
-                </div>
-                <p className="text-[var(--primary)] text-xs tracking-wider uppercase mb-2 font-medium">
-                  Maa {NINE_COLORS[activeColorIdx].goddess}
-                </p>
-                <p className="text-[var(--muted-foreground)] text-sm leading-relaxed">
-                  {NINE_COLORS[activeColorIdx].desc}
-                </p>
-                <p className="text-xs text-[var(--muted-foreground)] mt-2 opacity-70">
-                  We design matching chaniya choli & jewellery in every color!
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        </AnimatePresence>
-      </Section>
-
-      {/* ═══ ABOUT BHOOMI ═══ */}
-      <Section>
-        <div className="bg-card-glass rounded-2xl overflow-hidden glow-red">
-          <div className="relative h-48">
-            <img
-              src="https://sfile.chatglm.cn/images-ppt/6fe4652a12a8.png"
-              alt="Festive marigold and diyas"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-white to-transparent" />
-            <div className="absolute bottom-4 left-5 right-5">
-              <div className="flex items-center gap-2 mb-1">
-                <Star className="w-3.5 h-3.5 text-[var(--primary)] fill-[var(--primary)]" />
-                <span className="text-[var(--primary)] text-xs tracking-[0.2em] uppercase font-medium">
-                  The Designer
-                </span>
-              </div>
-              <h2 className="font-serif-display text-2xl font-bold text-[var(--foreground)]">Bhoomi Panchal</h2>
             </div>
           </div>
-          <div className="p-5 pt-3">
-            <p className="text-[var(--muted-foreground)] text-sm leading-[1.8]">
-              Fashion designer specializing in custom Navratri chaniya choli & jewellery.
-              Every piece is handcrafted with love — from intricate Bandhani and mirror work
-              to stunning Kundan and temple jewellery sets. I believe every woman deserves to
-              feel like a queen on the Garba dance floor.
-            </p>
-            <div className="flex gap-3 mt-4">
-              <div className="flex-1 bg-[var(--muted)] rounded-xl p-3 text-center">
-                <p className="text-[var(--primary)] font-serif-display text-xl font-bold">Any</p>
-                <p className="text-[var(--muted-foreground)] text-[10px] uppercase tracking-wider mt-0.5">Size</p>
-              </div>
-              <div className="flex-1 bg-[var(--muted)] rounded-xl p-3 text-center">
-                <p className="text-[var(--primary)] font-serif-display text-xl font-bold">Any</p>
-                <p className="text-[var(--muted-foreground)] text-[10px] uppercase tracking-wider mt-0.5">Design</p>
-              </div>
-              <div className="flex-1 bg-[var(--muted)] rounded-xl p-3 text-center">
-                <p className="text-[var(--primary)] font-serif-display text-xl font-bold">Any</p>
-                <p className="text-[var(--muted-foreground)] text-[10px] uppercase tracking-wider mt-0.5">Color</p>
-              </div>
-            </div>
-            {/* Bio extras from Instagram */}
-            <div className="flex flex-wrap gap-2 mt-4">
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-[var(--muted-foreground)] bg-[var(--muted)] rounded-full px-3 py-1.5">
-                <MapPin className="w-3 h-3" /> Exhibitions in Ahmedabad
-              </span>
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-[var(--muted-foreground)] bg-[var(--muted)] rounded-full px-3 py-1.5">
-                <Truck className="w-3 h-3" /> Worldwide Shipping
-              </span>
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-[var(--muted-foreground)] bg-[var(--muted)] rounded-full px-3 py-1.5">
-                <Heart className="w-3 h-3" /> DM for Order
-              </span>
-            </div>
+          <div className="flex-1 min-w-0">
+            <h2 className="font-semibold text-sm text-[#262626]">spiffy_clothing_and_jewellery</h2>
+            <p className="text-[#8E8E8E] text-xs">Bhoomi Panchal • Designer Wear</p>
           </div>
-        </div>
-      </Section>
-
-      {/* ═══ CHANIYA CHOLI COLLECTION ═══ */}
-      <Section>
-        <div className="mb-5">
-          <p className="text-[var(--accent)] text-xs tracking-[0.25em] uppercase mb-1 font-medium">
-            Handcrafted with Love
-          </p>
-          <h2 className="font-serif-display text-2xl font-bold">
-            Chaniya Choli <span className="text-gradient-gold">Collection</span>
-          </h2>
-          <p className="text-[var(--muted-foreground)] text-sm mt-1.5">
-            Swipe to explore our Navratri 2026 designs
-          </p>
-        </div>
-
-        <HorizontalScroll>
-          {CHANIYA_IMAGES.map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              className="flex-shrink-0 w-[200px] scroll-snap-start"
-            >
-              <button
-                onClick={() => setModal({ src: item.src, title: item.title })}
-                className="w-full text-left group"
-              >
-                <div className="relative aspect-[3/4] rounded-2xl overflow-hidden mb-2.5 bg-card-glass">
-                  <img
-                    src={item.src}
-                    alt={item.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-active:scale-105"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                  <div className="absolute bottom-3 left-3 right-3">
-                    <h3 className="font-serif-display text-sm font-semibold text-white drop-shadow-sm">
-                      {item.title}
-                    </h3>
-                    <p className="text-white/70 text-[10px] mt-0.5">{item.desc}</p>
-                  </div>
-                  <div className="absolute top-3 right-3 w-7 h-7 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center">
-                    <ExternalLink className="w-3 h-3 text-white/90" />
-                  </div>
-                </div>
-              </button>
-            </motion.div>
-          ))}
-        </HorizontalScroll>
-      </Section>
-
-      {/* ═══ JEWELLERY COLLECTION ═══ */}
-      <Section>
-        <div className="mb-5">
-          <p className="text-[var(--accent)] text-xs tracking-[0.25em] uppercase mb-1 font-medium">
-            Complete Your Look
-          </p>
-          <h2 className="font-serif-display text-2xl font-bold">
-            Jewellery <span className="text-gradient-gold">Collection</span>
-          </h2>
-          <p className="text-[var(--muted-foreground)] text-sm mt-1.5">
-            Kundan, Temple, Oxidised & more
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          {JEWELLERY_IMAGES.map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-            >
-              <button
-                onClick={() => setModal({ src: item.src, title: item.title })}
-                className="w-full text-left group"
-              >
-                <div className="relative aspect-square rounded-2xl overflow-hidden bg-card-glass">
-                  <img
-                    src={item.src}
-                    alt={item.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-active:scale-105"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <div className="absolute bottom-2.5 left-2.5 right-2.5">
-                    <h3 className="font-serif-display text-xs font-semibold text-white drop-shadow-sm">
-                      {item.title}
-                    </h3>
-                    <p className="text-white/60 text-[9px] mt-0.5">{item.desc}</p>
-                  </div>
-                </div>
-              </button>
-            </motion.div>
-          ))}
-        </div>
-      </Section>
-
-      {/* ═══ 2026 TRENDS ═══ */}
-      <Section>
-        <div className="mb-5">
-          <p className="text-[var(--accent)] text-xs tracking-[0.25em] uppercase mb-1 font-medium">
-            What&apos;s Hot This Season
-          </p>
-          <h2 className="font-serif-display text-2xl font-bold">
-            2026 <span className="text-gradient-festive">Trends</span>
-          </h2>
-        </div>
-
-        <div className="space-y-3">
-          {TRENDS.map((trend, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              className="bg-card-glass-light rounded-xl p-4 flex gap-4 items-start"
-            >
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#B8860B]/10 to-[#E07B2A]/10 flex items-center justify-center flex-shrink-0 text-[var(--primary)]">
-                {trend.icon}
-              </div>
-              <div className="min-w-0">
-                <h3 className="font-serif-display text-sm font-semibold text-[var(--foreground)] mb-0.5">
-                  {trend.title}
-                </h3>
-                <p className="text-[var(--muted-foreground)] text-xs leading-relaxed">
-                  {trend.desc}
-                </p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </Section>
-
-      {/* ═══ FESTIVAL VIBES ═══ */}
-      <Section>
-        <div className="mb-5">
-          <p className="text-[var(--accent)] text-xs tracking-[0.25em] uppercase mb-1 font-medium">
-            Feel the Rhythm
-          </p>
-          <h2 className="font-serif-display text-2xl font-bold">
-            Navratri <span className="text-gradient-gold">Vibes</span>
-          </h2>
-        </div>
-
-        <HorizontalScroll>
-          {[
-            {
-              src: "https://sfile.chatglm.cn/images-ppt/b231344d43ec.jpg",
-              title: "Garba Night Magic",
-              desc: "Traditional dance celebration",
-            },
-            {
-              src: "https://sfile.chatglm.cn/images-ppt/83b6435467b3.jpg",
-              title: "Festive Elegance",
-              desc: "Traditional lehenga in festive decor",
-            },
-            {
-              src: "https://sfile.chatglm.cn/images-ppt/a0ef83710e42.jpg",
-              title: "Ethnic Charm",
-              desc: "Black outfit with colorful embroidery",
-            },
-            {
-              src: "https://sfile.chatglm.cn/images-ppt/e1110d9d6ec7.jpg",
-              title: "Pink Dream",
-              desc: "Colorful lehenga with pink dupatta",
-            },
-          ].map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="flex-shrink-0 w-[260px] scroll-snap-start"
-            >
-              <button
-                onClick={() => setModal({ src: item.src, title: item.title })}
-                className="w-full text-left group"
-              >
-                <div className="relative aspect-[16/10] rounded-2xl overflow-hidden bg-card-glass">
-                  <img
-                    src={item.src}
-                    alt={item.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-active:scale-105"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                  <div className="absolute bottom-3 left-3">
-                    <h3 className="font-serif-display text-sm font-semibold text-white drop-shadow-sm">
-                      {item.title}
-                    </h3>
-                    <p className="text-white/60 text-[10px] mt-0.5">{item.desc}</p>
-                  </div>
-                </div>
-              </button>
-            </motion.div>
-          ))}
-        </HorizontalScroll>
-      </Section>
-
-      {/* ═══ CUSTOM ORDER CTA ═══ */}
-      <Section>
-        <div className="relative overflow-hidden rounded-2xl">
-          {/* Background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[#C0392B] via-[#E07B2A] to-[#D4A017]" />
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-4 right-8 w-24 h-24 rounded-full border border-white/40" />
-            <div className="absolute bottom-6 left-6 w-32 h-32 rounded-full border border-white/20" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 rounded-full border border-white/15" />
-          </div>
-
-          <div className="relative z-10 p-6 text-center">
-            <motion.div
-              animate={{ rotate: [0, 10, -10, 0] }}
-              transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
-              className="inline-block mb-4"
-            >
-              <Heart className="w-8 h-8 text-white fill-white" />
-            </motion.div>
-
-            <h2 className="font-serif-display text-2xl font-bold mb-2 text-white">
-              Your Dream Chaniya,{" "}
-              <span className="text-[#FFE4B5]">Made to Order</span>
-            </h2>
-            <p className="text-white/80 text-sm leading-relaxed mb-5 max-w-xs mx-auto">
-              Tell me your vision — I&apos;ll bring it to life. Custom sizing,
-              handpicked fabrics, and embroidery that tells your story.
-            </p>
-
-            <div className="flex flex-col gap-3">
-              <a
-                href={`${WA_BASE}?text=Hi%20Spiffy!%20I%20want%20to%20order%20custom%20chaniya%20choli%20for%20Navratri`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-white text-[#C0392B] rounded-full text-sm font-bold active:scale-95 transition-transform shadow-lg"
-              >
-                <MessageCircle className="w-4.5 h-4.5" />
-                WhatsApp to Order
-                <Send className="w-3.5 h-3.5" />
-              </a>
-              <a
-                href={`tel:+${PHONE}`}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-white/40 text-white rounded-full text-sm font-medium active:scale-95 transition-transform backdrop-blur-sm bg-white/10"
-              >
-                <Phone className="w-4 h-4" />
-                Call: +91 81601 59403
-              </a>
-            </div>
-
-            <div className="mt-5 pt-4 border-t border-white/20">
-              <p className="text-white/60 text-[10px] tracking-wider uppercase">
-                Exhibitions in Ahmedabad &bull; Worldwide Shipping
-              </p>
-            </div>
-          </div>
-        </div>
-      </Section>
-
-      {/* ═══ WHY CHOOSE US ═══ */}
-      <Section>
-        <div className="mb-5">
-          <p className="text-[var(--accent)] text-xs tracking-[0.25em] uppercase mb-1 font-medium">
-            The Spiffy Promise
-          </p>
-          <h2 className="font-serif-display text-2xl font-bold">
-            Why <span className="text-gradient-gold">Spiffy</span>?
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          {[
-            { emoji: "🪡", title: "Handcrafted", desc: "Every stitch tells a story of tradition & love" },
-            { emoji: "📐", title: "Perfect Fit", desc: "Custom tailoring for every body type & size" },
-            { emoji: "💎", title: "Premium Quality", desc: "Finest fabrics, kundan, mirrors & embellishments" },
-            { emoji: "🎨", title: "Your Design", desc: "Bring your Pinterest board — we make it real" },
-            { emoji: "📍", title: "Ahmedabad Exhibitions", desc: "Visit us at exhibitions across Ahmedabad" },
-            { emoji: "🚚", title: "Worldwide Shipping", desc: "Safe packaging & delivery to your doorstep" },
-          ].map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              className="bg-card-glass-light rounded-xl p-4"
-            >
-              <span className="text-2xl mb-2 block">{item.emoji}</span>
-              <h3 className="font-serif-display text-sm font-semibold text-[var(--foreground)] mb-1">
-                {item.title}
-              </h3>
-              <p className="text-[var(--muted-foreground)] text-[11px] leading-relaxed">
-                {item.desc}
-              </p>
-            </motion.div>
-          ))}
-        </div>
-      </Section>
-
-      {/* ═══ INSTAGRAM FEED CTA ═══ */}
-      <Section>
-        <div className="bg-card-glass rounded-2xl p-5 glow-gold text-center">
-          <Instagram className="w-8 h-8 text-[var(--primary)] mx-auto mb-3" />
-          <h2 className="font-serif-display text-xl font-bold mb-2">
-            Follow on Instagram
-          </h2>
-          <p className="text-[var(--muted-foreground)] text-sm mb-4 max-w-xs mx-auto">
-            Daily inspiration, behind-the-scenes, new designs & customer showcases.
-            Join the 7,226+ Spiffy family!
-          </p>
-          <a
-            href={IG_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#833AB4] via-[#E1306C] to-[#F77737] text-white rounded-full text-sm font-semibold active:scale-95 transition-transform shadow-lg"
-          >
-            <Instagram className="w-4 h-4" />
-            @spiffy_clothing_and_jewellery
-            <ExternalLink className="w-3 h-3" />
+          <a href={`${WA_BASE}?text=Hi%20Spiffy!`} target="_blank" rel="noopener noreferrer"
+            className="px-5 py-1.5 bg-[#0095F6] text-white text-xs font-semibold rounded-lg active:opacity-80 transition-opacity">
+            Order
           </a>
         </div>
-      </Section>
+        <p className="text-[13px] text-[#262626] mt-3 leading-[1.5]">
+          🦁 Navratri & Festive Collections<br />
+          📍 Exhibitions in Ahmedabad<br />
+          🚚 Worldwide Shipping<br />
+          📧 DM for order<br />
+          👋 Call: +91 81601 59403
+        </p>
+        <div className="flex gap-6 mt-3">
+          <div className="text-center"><p className="font-semibold text-sm text-[#262626]">37</p><p className="text-[10px] text-[#8E8E8E]">posts</p></div>
+          <div className="text-center"><p className="font-semibold text-sm text-[#262626]">7,226</p><p className="text-[10px] text-[#8E8E8E]">followers</p></div>
+          <div className="text-center"><p className="font-semibold text-sm text-[#262626]">1</p><p className="text-[10px] text-[#8E8E8E]">following</p></div>
+        </div>
+      </div>
 
-      {/* ═══ FOOTER ═══ */}
-      <footer className="px-5 pb-10 pt-6 mt-4 border-t border-[var(--border)]">
-        <div className="text-center">
-          <div className="inline-flex items-center gap-1.5 mb-3">
-            <Sparkles className="w-4 h-4 text-[var(--primary)]" />
-            <span className="font-serif-display text-lg font-bold text-gradient-gold">
-              Spiffy
-            </span>
+      {/* 9 Colors row */}
+      <div className="bg-white border-b border-[#DBDBDB] p-4">
+        <p className="text-xs font-semibold text-[#262626] mb-3">🌈 9 Colors of Navratri 2026</p>
+        <div className="flex gap-2 overflow-x-auto no-scrollbar">
+          {NINE_COLORS.map((c) => (
+            <div key={c.day} className="flex-shrink-0 flex flex-col items-center gap-1">
+              <div className="w-10 h-10 rounded-full border border-[#DBDBDB] flex items-center justify-center text-[11px] font-bold text-[#262626]" style={{ backgroundColor: c.hex }}>
+                {c.day}
+              </div>
+              <span className="text-[9px] text-[#8E8E8E] w-12 text-center leading-tight">{c.color}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Feed post — Hero CTA */}
+      <div className="bg-white border-b border-[#DBDBDB]">
+        <div className="px-4 py-3 flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#F58529] to-[#DD2A7B] p-[1.5px]">
+            <div className="w-full h-full rounded-full bg-white p-[1.5px]">
+              <div className="w-full h-full rounded-full bg-[#EFEFEF] flex items-center justify-center">
+                <span className="text-[10px] font-bold text-gradient-ig">S</span>
+              </div>
+            </div>
           </div>
-          <p className="text-[var(--muted-foreground)] text-xs mb-1">
-            Clothing & Jewellery by Bhoomi Panchal
-          </p>
-          <p className="text-[var(--muted-foreground)] text-[10px] mb-4 flex items-center justify-center gap-1">
-            <Phone className="w-3 h-3" /> +91 81601 59403
-            <span className="mx-1.5 text-[var(--border)]">|</span>
-            <MapPin className="w-3 h-3" /> Ahmedabad
-          </p>
-
-          <div className="flex justify-center gap-4 mb-4">
-            <a
-              href={WA_BASE}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-10 h-10 rounded-full bg-card-glass flex items-center justify-center text-[var(--muted-foreground)] hover:text-[#25D366] transition-colors active:scale-90"
-              aria-label="WhatsApp"
-            >
-              <MessageCircle className="w-4.5 h-4.5" />
-            </a>
-            <a
-              href={IG_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-10 h-10 rounded-full bg-card-glass flex items-center justify-center text-[var(--muted-foreground)] hover:text-[#E1306C] transition-colors active:scale-90"
-              aria-label="Instagram"
-            >
-              <Instagram className="w-4.5 h-4.5" />
-            </a>
-            <a
-              href={`tel:+${PHONE}`}
-              className="w-10 h-10 rounded-full bg-card-glass flex items-center justify-center text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors active:scale-90"
-              aria-label="Phone"
-            >
-              <Phone className="w-4.5 h-4.5" />
-            </a>
+          <span className="text-sm font-semibold text-[#262626]">spiffy_clothing_and_jewellery</span>
+          <span className="text-[10px] text-[#8E8E8E]">• Ahmedabad</span>
+        </div>
+        <div className="relative aspect-square">
+          <img src="https://sfile.chatglm.cn/images-ppt/efc074bc5101.jpg" alt="Navratri celebration" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-4">
+            <h3 className="font-serif-display text-2xl font-bold text-white drop-shadow-md">Custom Chaniya Choli</h3>
+            <p className="text-white/90 text-sm mt-1">Any size. Any design. Any color.</p>
           </div>
-
-          <p className="text-[var(--muted-foreground)] text-[10px] opacity-50">
-            Made with love for Navratri 2026
+        </div>
+        <div className="px-4 py-3">
+          <div className="flex items-center gap-4 mb-2">
+            <Heart className="w-6 h-6 text-[#262626]" />
+            <MessageCircle className="w-6 h-6 text-[#262626]" />
+            <Share2 className="w-6 h-6 text-[#262626]" />
+            <Bookmark className="w-6 h-6 text-[#262626] ml-auto" />
+          </div>
+          <p className="text-sm text-[#262626]"><span className="font-semibold">7,226 likes</span></p>
+          <p className="text-sm text-[#262626] mt-1">
+            <span className="font-semibold">spiffy_clothing_and_jewellery</span>{" "}
+            Navratri 2026 collection is LIVE! 🎉 DM us or WhatsApp to order your custom chaniya choli & jewellery. Worldwide shipping available!
           </p>
         </div>
-      </footer>
+      </div>
 
-      {/* ═══ IMAGE MODAL ═══ */}
-      <ImageModal
-        src={modal?.src || ""}
-        title={modal?.title || ""}
-        open={!!modal}
-        onClose={() => setModal(null)}
-      />
+      {/* Feed post — Trends */}
+      <div className="bg-white border-b border-[#DBDBDB]">
+        <div className="px-4 py-3 flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#F58529] to-[#DD2A7B] p-[1.5px]">
+            <div className="w-full h-full rounded-full bg-white p-[1.5px]">
+              <div className="w-full h-full rounded-full bg-[#EFEFEF] flex items-center justify-center">
+                <span className="text-[10px] font-bold text-gradient-ig">S</span>
+              </div>
+            </div>
+          </div>
+          <span className="text-sm font-semibold text-[#262626]">spiffy_clothing_and_jewellery</span>
+        </div>
+        <div className="px-4 py-3">
+          <p className="text-xs font-semibold text-[#262626] mb-3">🔥 2026 Navratri Trends</p>
+          <div className="space-y-2.5">
+            {TRENDS.map((t, i) => (
+              <div key={i} className="flex items-start gap-3 p-3 bg-[#FAFAFA] rounded-xl">
+                <div className="w-9 h-9 rounded-full bg-[#EFEFEF] flex items-center justify-center text-[#8E8E8E] flex-shrink-0">{t.icon}</div>
+                <div>
+                  <h4 className="text-[13px] font-semibold text-[#262626]">{t.title}</h4>
+                  <p className="text-[12px] text-[#8E8E8E]">{t.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="px-4 pb-3">
+          <div className="flex items-center gap-4">
+            <Heart className="w-6 h-6 text-[#262626]" />
+            <MessageCircle className="w-6 h-6 text-[#262626]" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
-      {/* ═══ FLOATING WHATSAPP BUTTON ═══ */}
-      <motion.a
-        href={`${WA_BASE}?text=Hi%20Spiffy!%20I%20saw%20your%20website%20and%20want%20to%20know%20more%20about%20custom%20chaniya%20choli`}
-        target="_blank"
-        rel="noopener noreferrer"
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 1.5, type: "spring", stiffness: 200 }}
-        className="fixed bottom-6 right-4 z-40 w-14 h-14 bg-[#25D366] rounded-full flex items-center justify-center shadow-lg shadow-[#25D366]/30 active:scale-90 transition-transform"
-        aria-label="Chat on WhatsApp"
-      >
-        <MessageCircle className="w-6 h-6 text-white fill-white" />
-      </motion.a>
+/* ═══════════════════════════════════════════════════════════════ */
+/*  TAB: SEARCH — Pinterest-style masonry grid                   */
+/* ═══════════════════════════════════════════════════════════════ */
+function SearchTab() {
+  const [modal, setModal] = useState<{ src: string; title: string } | null>(null);
+  const [filter, setFilter] = useState("all");
+
+  const filtered = filter === "all" ? PINS : filter === "chaniya" ? PINS.slice(0, 12) : PINS.slice(12);
+
+  return (
+    <div className="pb-safe">
+      {/* Search bar */}
+      <div className="bg-white border-b border-[#DBDBDB] px-4 py-2 sticky top-0 z-20">
+        <div className="flex items-center gap-2 bg-[#EFEFEF] rounded-xl px-3 py-2">
+          <Search className="w-4 h-4 text-[#8E8E8E]" />
+          <input
+            type="text"
+            placeholder="Search chaniya choli, jewellery..."
+            className="bg-transparent text-sm text-[#262626] placeholder:text-[#8E8E8E] outline-none flex-1"
+            readOnly
+          />
+        </div>
+      </div>
+
+      {/* Filter chips */}
+      <div className="bg-white px-4 py-2 border-b border-[#DBDBDB] flex gap-2 overflow-x-auto no-scrollbar">
+        {["all", "chaniya", "jewellery"].map((f) => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            className={`px-4 py-1.5 rounded-lg text-xs font-semibold capitalize transition-colors flex-shrink-0 ${
+              filter === f ? "bg-[#262626] text-white" : "bg-[#EFEFEF] text-[#262626]"
+            }`}
+          >
+            {f === "all" ? "All" : f === "chaniya" ? "👗 Chaniya Choli" : "💎 Jewellery"}
+          </button>
+        ))}
+      </div>
+
+      {/* Pinterest masonry grid */}
+      <div className="p-1.5">
+        <div className="masonry-grid">
+          {filtered.map((pin, i) => (
+            <motion.div
+              key={`${filter}-${i}`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.04 }}
+            >
+              <button
+                onClick={() => setModal({ src: pin.src, title: pin.title })}
+                className="w-full text-left group"
+              >
+                <div className={`${pin.height} relative rounded-xl overflow-hidden bg-[#EFEFEF]`}>
+                  <img
+                    src={pin.src}
+                    alt={pin.title}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-active:opacity-100 transition-opacity" />
+                  <div className="absolute top-2 right-2 opacity-0 group-active:opacity-100 transition-opacity">
+                    <Bookmark className="w-5 h-5 text-white drop-shadow" />
+                  </div>
+                </div>
+                <p className="text-[12px] font-medium text-[#262626] mt-1.5 px-0.5 leading-tight">{pin.title}</p>
+                <p className="text-[10px] text-[#8E8E8E] px-0.5 flex items-center gap-1 mt-0.5">
+                  <Heart className="w-3 h-3" /> {pin.likes}
+                </p>
+              </button>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      <ImageModal src={modal?.src || ""} title={modal?.title || ""} open={!!modal} onClose={() => setModal(null)} />
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════ */
+/*  TAB: REELS — Full-screen vertical swipe like IG Reels        */
+/* ═══════════════════════════════════════════════════════════════ */
+function ReelsTab() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  return (
+    <div ref={containerRef} className="h-[calc(100dvh-60px)] overflow-y-scroll reel-snap">
+      {REELS.map((reel, i) => (
+        <div key={i} className="h-[calc(100dvh-60px)] relative flex-shrink-0 scroll-snap-start">
+          <img src={reel.src} alt={reel.title} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
+
+          {/* Right side actions (like IG Reels) */}
+          <div className="absolute right-3 bottom-24 flex flex-col items-center gap-5">
+            <button className="flex flex-col items-center gap-0.5">
+              <Heart className="w-7 h-7 text-white drop-shadow" />
+              <span className="text-[10px] text-white font-medium">2.4k</span>
+            </button>
+            <button className="flex flex-col items-center gap-0.5">
+              <MessageCircle className="w-7 h-7 text-white drop-shadow" />
+              <span className="text-[10px] text-white font-medium">128</span>
+            </button>
+            <button className="flex flex-col items-center gap-0.5">
+              <Share2 className="w-7 h-7 text-white drop-shadow" />
+              <span className="text-[10px] text-white font-medium">Share</span>
+            </button>
+            <button className="flex flex-col items-center gap-0.5">
+              <Bookmark className="w-7 h-7 text-white drop-shadow" />
+              <span className="text-[10px] text-white font-medium">Save</span>
+            </button>
+          </div>
+
+          {/* Bottom info */}
+          <div className="absolute bottom-6 left-4 right-16">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#F58529] to-[#DD2A7B] p-[1px]">
+                <div className="w-full h-full rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                  <span className="text-[10px] font-bold text-white">S</span>
+                </div>
+              </div>
+              <span className="text-white font-semibold text-sm drop-shadow">spiffy_clothing_and_jewellery</span>
+            </div>
+            <h3 className="text-white font-semibold text-base drop-shadow-md">{reel.title}</h3>
+            <p className="text-white/80 text-xs mt-1 drop-shadow">{reel.desc}</p>
+            <a
+              href={`${WA_BASE}?text=Hi%20Spiffy!%20I%20loved%20your%20${encodeURIComponent(reel.title)}`}
+              target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 mt-3 px-5 py-2 bg-white/20 backdrop-blur-md rounded-lg text-white text-xs font-semibold active:bg-white/30 transition-colors"
+            >
+              <MessageCircle className="w-3.5 h-3.5" /> Order on WhatsApp
+            </a>
+          </div>
+
+          {/* Swipe hint (first reel only) */}
+          {i === 0 && (
+            <motion.div
+              animate={{ y: [0, 8, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="absolute top-4 left-1/2 -translate-x-1/2 flex flex-col items-center"
+            >
+              <span className="text-white/60 text-[10px]">Swipe up</span>
+              <ChevronLeft className="w-4 h-4 text-white/60 rotate-[-90deg]" />
+            </motion.div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════ */
+/*  TAB: ORDERS — CTA + contact                                   */
+/* ═══════════════════════════════════════════════════════════════ */
+function OrdersTab() {
+  return (
+    <div className="pb-safe">
+      {/* Header */}
+      <div className="bg-white border-b border-[#DBDBDB] px-4 py-4 text-center">
+        <h2 className="text-lg font-bold text-[#262626]">Place Your Order</h2>
+        <p className="text-xs text-[#8E8E8E] mt-0.5">Custom chaniya choli & jewellery</p>
+      </div>
+
+      {/* Contact options */}
+      <div className="p-4 space-y-3">
+        <a
+          href={`${WA_BASE}?text=Hi%20Spiffy!%20I%20want%20to%20order%20custom%20chaniya%20choli%20for%20Navratri`}
+          target="_blank" rel="noopener noreferrer"
+          className="flex items-center gap-3 p-4 bg-white rounded-2xl border border-[#DBDBDB] active:bg-[#FAFAFA] transition-colors"
+        >
+          <div className="w-12 h-12 rounded-full bg-[#25D366]/10 flex items-center justify-center flex-shrink-0">
+            <MessageCircle className="w-6 h-6 text-[#25D366]" />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-[#262626]">WhatsApp</p>
+            <p className="text-xs text-[#8E8E8E]">+91 81601 59403</p>
+          </div>
+          <ChevronRight className="w-4 h-4 text-[#8E8E8E]" />
+        </a>
+
+        <a href={`tel:+${PHONE}`} className="flex items-center gap-3 p-4 bg-white rounded-2xl border border-[#DBDBDB] active:bg-[#FAFAFA] transition-colors">
+          <div className="w-12 h-12 rounded-full bg-[#0095F6]/10 flex items-center justify-center flex-shrink-0">
+            <Phone className="w-6 h-6 text-[#0095F6]" />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-[#262626]">Call Us</p>
+            <p className="text-xs text-[#8E8E8E]">+91 81601 59403</p>
+          </div>
+          <ChevronRight className="w-4 h-4 text-[#8E8E8E]" />
+        </a>
+
+        <a href={IG_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-4 bg-white rounded-2xl border border-[#DBDBDB] active:bg-[#FAFAFA] transition-colors">
+          <div className="w-12 h-12 rounded-full bg-[#DD2A7B]/10 flex items-center justify-center flex-shrink-0">
+            <Instagram className="w-6 h-6 text-[#DD2A7B]" />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-[#262626]">Instagram DM</p>
+            <p className="text-xs text-[#8E8E8E]">@spiffy_clothing_and_jewellery</p>
+          </div>
+          <ChevronRight className="w-4 h-4 text-[#8E8E8E]" />
+        </a>
+      </div>
+
+      {/* Quick order form info */}
+      <div className="px-4 pb-4">
+        <div className="bg-white rounded-2xl border border-[#DBDBDB] p-4">
+          <h3 className="text-sm font-bold text-[#262626] mb-3">How to Order</h3>
+          {[
+            { step: "1", text: "Send us your design reference or describe your dream outfit" },
+            { step: "2", text: "We'll discuss fabric, size, color & budget on WhatsApp" },
+            { step: "3", text: "Your custom piece is handcrafted and shipped to you!" },
+          ].map((s) => (
+            <div key={s.step} className="flex gap-3 mb-3 last:mb-0">
+              <div className="w-7 h-7 rounded-full bg-[#EFEFEF] flex items-center justify-center flex-shrink-0">
+                <span className="text-xs font-bold text-[#0095F6]">{s.step}</span>
+              </div>
+              <p className="text-[13px] text-[#262626] leading-relaxed pt-0.5">{s.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Info cards */}
+      <div className="px-4 pb-4 grid grid-cols-2 gap-2.5">
+        {[
+          { icon: <MapPin className="w-4 h-4" />, label: "Exhibitions in Ahmedabad" },
+          { icon: <Truck className="w-4 h-4" />, label: "Worldwide Shipping" },
+          { icon: <Globe className="w-4 h-4" />, label: "7,226+ Happy Followers" },
+          { icon: <Star className="w-4 h-4" />, label: "Custom Any Size / Design" },
+        ].map((c, i) => (
+          <div key={i} className="bg-white rounded-xl border border-[#DBDBDB] p-3 flex items-center gap-2.5">
+            <div className="text-[#0095F6]">{c.icon}</div>
+            <p className="text-[11px] font-medium text-[#262626] leading-tight">{c.label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Big CTA */}
+      <div className="px-4 pb-6">
+        <a
+          href={`${WA_BASE}?text=Hi%20Spiffy!%20I%20want%20to%20order%20custom%20chaniya%20choli`}
+          target="_blank" rel="noopener noreferrer"
+          className="flex items-center justify-center gap-2 w-full py-3.5 bg-[#0095F6] text-white rounded-xl text-sm font-semibold active:opacity-80 transition-opacity shadow-sm"
+        >
+          <MessageCircle className="w-4 h-4" />
+          Start Ordering on WhatsApp
+          <Send className="w-3.5 h-3.5" />
+        </a>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════ */
+/*  TAB: PROFILE                                                  */
+/* ═══════════════════════════════════════════════════════════════ */
+function ProfileTab() {
+  const [showGrid, setShowGrid] = useState(true);
+  return (
+    <div className="pb-safe">
+      <div className="bg-white px-4 pt-4 pb-2">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#F58529] to-[#8134AF] p-[2.5px] flex-shrink-0">
+            <div className="w-full h-full rounded-full bg-white p-[2.5px]">
+              <div className="w-full h-full rounded-full bg-[#EFEFEF] flex items-center justify-center">
+                <span className="text-2xl font-serif-display font-bold text-gradient-ig">S</span>
+              </div>
+            </div>
+          </div>
+          <div className="flex-1">
+            <div className="flex gap-5 justify-center">
+              <div className="text-center"><p className="font-bold text-lg text-[#262626]">37</p><p className="text-[10px] text-[#8E8E8E]">posts</p></div>
+              <div className="text-center"><p className="font-bold text-lg text-[#262626]">7,226</p><p className="text-[10px] text-[#8E8E8E]">followers</p></div>
+              <div className="text-center"><p className="font-bold text-lg text-[#262626]">1</p><p className="text-[10px] text-[#8E8E8E]">following</p></div>
+            </div>
+          </div>
+        </div>
+        <h2 className="font-semibold text-sm text-[#262626]">Spiffy Clothing & Jewellery</h2>
+        <p className="text-[13px] text-[#262626] mt-1 leading-[1.4]">
+          🦁 Navratri & Festive Collections<br />
+          📍 Exhibitions in Ahmedabad<br />
+          🚚 Worldwide Shipping<br />
+          👋 Call: +91 81601 59403
+        </p>
+        <div className="flex gap-2 mt-3">
+          <a href={`${WA_BASE}?text=Hi%20Spiffy!`} target="_blank" rel="noopener noreferrer"
+            className="flex-1 py-1.5 bg-[#0095F6] text-white text-xs font-semibold rounded-lg text-center active:opacity-80">
+            Order Now
+          </a>
+          <a href={IG_URL} target="_blank" rel="noopener noreferrer"
+            className="flex-1 py-1.5 bg-[#EFEFEF] text-[#262626] text-xs font-semibold rounded-lg text-center active:bg-[#DBDBDB]">
+            Instagram
+          </a>
+        </div>
+      </div>
+
+      {/* Grid/Reel toggle */}
+      <div className="bg-white border-b border-[#DBDBDB] flex">
+        <button onClick={() => setShowGrid(true)} className={`flex-1 py-2.5 flex justify-center ${showGrid ? "border-b-2 border-[#262626]" : ""}`}>
+          <Grid3X3 className="w-5 h-5 text-[#262626]" />
+        </button>
+        <button onClick={() => setShowGrid(false)} className={`flex-1 py-2.5 flex justify-center ${!showGrid ? "border-b-2 border-[#262626]" : ""}`}>
+          <Film className="w-5 h-5 text-[#262626]" />
+        </button>
+      </div>
+
+      {/* Grid view */}
+      {showGrid && (
+        <div className="grid grid-cols-3 gap-0.5">
+          {PINS.map((pin, i) => (
+            <div key={i} className="aspect-square relative bg-[#EFEFEF]">
+              <img src={pin.src} alt={pin.title} className="w-full h-full object-cover" loading="lazy" />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Reels view */}
+      {!showGrid && (
+        <div className="grid grid-cols-3 gap-0.5">
+          {REELS.map((reel, i) => (
+            <div key={i} className="aspect-[9/16] relative bg-[#EFEFEF]">
+              <img src={reel.src} alt={reel.title} className="w-full h-full object-cover" loading="lazy" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Film className="w-6 h-6 text-white drop-shadow" />
+              </div>
+            </div>
+          ))}
+          {REELS.map((reel, i) => (
+            <div key={`dup-${i}`} className="aspect-[9/16] relative bg-[#EFEFEF]">
+              <img src={reel.src} alt="" className="w-full h-full object-cover opacity-60" loading="lazy" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Film className="w-6 h-6 text-white drop-shadow" />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════ */
+/*  BOTTOM NAVIGATION — Instagram style                            */
+/* ═══════════════════════════════════════════════════════════════ */
+function BottomNav({ active, onChange }: { active: Tab; onChange: (t: Tab) => void }) {
+  const items: { tab: Tab; icon: React.ReactNode; label: string }[] = [
+    { tab: "home", icon: <HomeIcon className="w-6 h-6" />, label: "Home" },
+    { tab: "search", icon: <Search className="w-6 h-6" />, label: "Search" },
+    { tab: "reels", icon: <Film className="w-6 h-6" />, label: "Reels" },
+    { tab: "orders", icon: <PlusSquare className="w-6 h-6" />, label: "Order" },
+    { tab: "profile", icon: <div className="w-6 h-6 rounded-full border-2 border-[#262626] bg-gradient-to-br from-[#F58529] to-[#DD2A7B] p-[0.5px]"><div className="w-full h-full rounded-full bg-[#FAFAFA] flex items-center justify-center"><span className="text-[8px] font-bold text-[#262626]">S</span></div></div>, label: "Profile" },
+  ];
+
+  return (
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-[#DBDBDB] h-[60px] flex items-center justify-around px-2" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+      {items.map((item) => (
+        <button
+          key={item.tab}
+          onClick={() => onChange(item.tab)}
+          className="flex flex-col items-center justify-center py-1 px-3 min-w-[48px] active:opacity-60 transition-opacity"
+          aria-label={item.label}
+        >
+          <div className={active === item.tab ? "text-[#262626]" : "text-[#8E8E8E]"}>
+            {item.icon}
+          </div>
+        </button>
+      ))}
+    </nav>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════ */
+/*  MAIN PAGE                                                    */
+/* ═══════════════════════════════════════════════════════════════ */
+export default function Home() {
+  const [activeTab, setActiveTab] = useState<Tab>("home");
+
+  return (
+    <main className="min-h-[100dvh] bg-[#FAFAFA] font-sans-body">
+      {/* Top bar — Instagram style */}
+      <header className="sticky top-0 z-30 bg-white border-b border-[#DBDBDB] h-[48px] flex items-center px-4">
+        <h1 className="font-serif-display text-xl font-bold text-gradient-ig">Spiffy</h1>
+        <div className="flex-1" />
+        <a href={`${WA_BASE}?text=Hi%20Spiffy!`} target="_blank" rel="noopener noreferrer" className="active:opacity-60">
+          <Heart className="w-6 h-6 text-[#262626]" />
+        </a>
+        <a href={`${WA_BASE}?text=Hi%20Spiffy!`} target="_blank" rel="noopener noreferrer" className="ml-4 active:opacity-60">
+          <MessageCircle className="w-6 h-6 text-[#262626]" />
+        </a>
+      </header>
+
+      {/* Tab content */}
+      <AnimatePresence mode="wait">
+        {activeTab === "home" && <motion.div key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}><HomeTab /></motion.div>}
+        {activeTab === "search" && <motion.div key="search" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}><SearchTab /></motion.div>}
+        {activeTab === "reels" && <motion.div key="reels" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}><ReelsTab /></motion.div>}
+        {activeTab === "orders" && <motion.div key="orders" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}><OrdersTab /></motion.div>}
+        {activeTab === "profile" && <motion.div key="profile" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}><ProfileTab /></motion.div>}
+      </AnimatePresence>
+
+      {/* Bottom navigation */}
+      <BottomNav active={activeTab} onChange={setActiveTab} />
+
+      {/* Floating WhatsApp (only on home/orders tab) */}
+      {(activeTab === "home" || activeTab === "orders") && (
+        <motion.a
+          href={`${WA_BASE}?text=Hi%20Spiffy!%20I%20saw%20your%20website`}
+          target="_blank" rel="noopener noreferrer"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          className="fixed bottom-[72px] right-4 z-30 w-12 h-12 bg-[#25D366] rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform"
+          aria-label="WhatsApp"
+        >
+          <MessageCircle className="w-5 h-5 text-white fill-white" />
+        </motion.a>
+      )}
     </main>
   );
 }

@@ -31,25 +31,25 @@
 }
 
 :root {
-  --radius: 1rem;
-  --background: #FFF9F0;
-  --foreground: #3D1A0A;
+  --radius: 0.75rem;
+  --background: #FAFAFA;
+  --foreground: #262626;
   --card: #FFFFFF;
-  --card-foreground: #3D1A0A;
+  --card-foreground: #262626;
   --popover: #FFFFFF;
-  --popover-foreground: #3D1A0A;
-  --primary: #B8860B;
+  --popover-foreground: #262626;
+  --primary: #0095F6;
   --primary-foreground: #FFFFFF;
-  --secondary: #C0392B;
+  --secondary: #ED4956;
   --secondary-foreground: #FFFFFF;
-  --muted: #FFF0E0;
-  --muted-foreground: #7A5C3E;
-  --accent: #E07B2A;
+  --muted: #EFEFEF;
+  --muted-foreground: #8E8E8E;
+  --accent: #C13584;
   --accent-foreground: #FFFFFF;
-  --destructive: #DC2626;
-  --border: #F0DCC8;
-  --input: #F0DCC8;
-  --ring: #B8860B;
+  --destructive: #ED4956;
+  --border: #DBDBDB;
+  --input: #DBDBDB;
+  --ring: #0095F6;
 }
 
 @layer base {
@@ -62,15 +62,8 @@
     -moz-osx-font-smoothing: grayscale;
   }
   ::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: #E0C9AD;
-    border-radius: 10px;
+    width: 0px;
+    height: 0px;
   }
 }
 
@@ -79,59 +72,22 @@
     font-family: var(--font-playfair), Georgia, serif;
   }
   .font-sans-body {
-    font-family: var(--font-poppins), system-ui, sans-serif;
+    font-family: var(--font-poppins), -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  }
+  .text-gradient-ig {
+    background: linear-gradient(45deg, #F58529 0%, #DD2A7B 50%, #8134AF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
   .text-gradient-gold {
-    background: linear-gradient(135deg, #9A7209 0%, #D4A017 40%, #E8C240 60%, #D4A017 100%);
+    background: linear-gradient(135deg, #B8860B 0%, #D4A017 50%, #E8C240 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-  .text-gradient-festive {
-    background: linear-gradient(135deg, #C0392B 0%, #D4A017 50%, #E07B2A 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .bg-card-glass {
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 248, 238, 0.92) 100%);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(184, 134, 11, 0.12);
-    box-shadow: 0 2px 16px rgba(184, 134, 11, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04);
-  }
-  .bg-card-glass-light {
-    background: linear-gradient(145deg, rgba(255, 248, 238, 0.85) 0%, rgba(255, 255, 255, 0.95) 100%);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(184, 134, 11, 0.08);
-    box-shadow: 0 1px 8px rgba(184, 134, 11, 0.04);
-  }
-  .glow-gold {
-    box-shadow: 0 4px 20px rgba(184, 134, 11, 0.12), 0 1px 6px rgba(184, 134, 11, 0.06);
-  }
-  .glow-red {
-    box-shadow: 0 4px 20px rgba(192, 57, 43, 0.1), 0 1px 6px rgba(192, 57, 43, 0.05);
-  }
-  .glow-accent {
-    box-shadow: 0 4px 20px rgba(224, 123, 42, 0.1), 0 1px 6px rgba(224, 123, 42, 0.05);
-  }
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
-  .animate-shimmer {
-    animation: shimmer 3s ease-in-out infinite;
-  }
-  .animate-pulse-glow {
-    animation: pulseGlow 2s ease-in-out infinite;
-  }
-  .scroll-snap-x {
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-  }
-  .scroll-snap-center {
-    scroll-snap-align: center;
-  }
-  .scroll-snap-start {
-    scroll-snap-align: start;
+  .bg-ig-gradient {
+    background: linear-gradient(45deg, #F58529, #DD2A7B, #8134AF);
   }
   .no-scrollbar::-webkit-scrollbar {
     display: none;
@@ -142,54 +98,26 @@
   }
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+/* Masonry layout */
+.masonry-grid {
+  column-count: 2;
+  column-gap: 8px;
+}
+.masonry-grid > * {
+  break-inside: avoid;
+  margin-bottom: 8px;
 }
 
-@keyframes shimmer {
-  0% { opacity: 0.5; }
-  50% { opacity: 1; }
-  100% { opacity: 0.5; }
+/* Reel snap */
+.reel-snap {
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.reel-snap > * {
+  scroll-snap-align: start;
 }
 
-@keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 15px rgba(184, 134, 11, 0.1); }
-  50% { box-shadow: 0 0 30px rgba(184, 134, 11, 0.2), 0 0 60px rgba(184, 134, 11, 0.05); }
+/* Bottom nav safe area */
+.pb-safe {
+  padding-bottom: max(70px, env(safe-area-inset-bottom, 70px));
 }
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-@keyframes slideInRight {
-  from { opacity: 0; transform: translateX(40px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-.animate-fade-in-up {
-  animation: fadeInUp 0.8s ease-out forwards;
-}
-
-.animate-scale-in {
-  animation: scaleIn 0.6s ease-out forwards;
-}
-
-.animate-slide-in-right {
-  animation: slideInRight 0.7s ease-out forwards;
-}
-
-.animation-delay-100 { animation-delay: 0.1s; }
-.animation-delay-200 { animation-delay: 0.2s; }
-.animation-delay-300 { animation-delay: 0.3s; }
-.animation-delay-400 { animation-delay: 0.4s; }
-.animation-delay-500 { animation-delay: 0.5s; }
-.animation-delay-600 { animation-delay: 0.6s; }
-.animation-delay-700 { animation-delay: 0.7s; }
-.animation-delay-800 { animation-delay: 0.8s; }
